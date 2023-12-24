@@ -1,26 +1,20 @@
+import { articleQuery } from "@/app/lib/sanity.queries";
 import { client } from "../../lib/sanity.client";
-import { networkDirectory } from "../../lib/sanity.interface";
+import { articleFull } from "../../lib/sanity.interface";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
 async function getData(id: string) {
-  const query = `
-  *[_type == 'articles' && slug.current == '${id}'] {
-    title,
-    "currentSlug": slug.current,
-  }[0]`;
-
-  const data = await client.fetch(query);
-
+  const data = await client.fetch(articleQuery, {id});
   return data;
 }
 
-export default async function Network({
+export default async function Article({
   params,
 }: {
   params: { id: string };
 }) {
-  const data = await getData(params.id);
+  const data:articleFull = await getData(params.id);
 
   return (
     <div className="mt-8">

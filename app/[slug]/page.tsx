@@ -1,21 +1,13 @@
+import { networkInterfaces } from "os";
 import { client } from "../lib/sanity.client";
-import { networkDirectory } from "../lib/sanity.interface";
+import { networkFull } from "../lib/sanity.interface";
+import { articlesQuery, networkQuery } from "../lib/sanity.queries";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
 async function getData(slug: string) {
-
-  const networkQuery = `*[_type == 'networks' && slug.current == 'climate'][0]`
-  const articleQuery = `
-  *[_type == 'articles' && networks->slug.current == '${slug}'] | order(date desc) {
-    title,
-    "currentSlug": slug.current,
-  }`;
-
-  const query = `{ "network": ${networkQuery}, "articles": ${articleQuery} }`
-
-  const  { network, articles }  = await client.fetch(query);
-
+  const query = `{ "network": ${networkQuery}, "articles": ${articlesQuery} }`
+  const  { network, articles }  = await client.fetch(query, {slug});
   return { network, articles };
 }
 
@@ -24,7 +16,7 @@ export default async function Network({
 }: {
   params: { slug: string };
 }) {
-  const data = await getData(params.slug);
+  const data:networkFull = await getData(params.slug);
 
   return (
     <div className="mt-8">

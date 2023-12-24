@@ -1,21 +1,15 @@
 import { client } from "./lib/sanity.client";
-import { networkDirectory } from "./lib/sanity.interface";
+import { networksDirectory } from "./lib/sanity.interface";
+import { networksQuery } from "./lib/sanity.queries";
 
 async function getData() {
-  const query = `
-  *[_type == 'networks'] | order(_createdAt desc) {
-    title,
-    "currentSlug": slug.current,
-  }`;
-
-  const data = await client.fetch(query);
-
+  const data = await client.fetch(networksQuery);
   return data;
 }
 
 export default async function Home() {
   
-  const data: networkDirectory[] = await getData();
+  const data: networksDirectory[] = await getData();
 
   return (
     <div>
