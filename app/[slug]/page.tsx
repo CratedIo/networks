@@ -14,7 +14,6 @@ async function getData(slug: string) {
 
   const query = `{ "network": ${networkQuery}, "articles": ${articleQuery} }`
 
-
   const  { network, articles }  = await client.fetch(query);
 
   return { network, articles };
@@ -29,6 +28,7 @@ export default async function Network({
 
   return (
     <div className="mt-8">
+      <h1>{data.network.title}</h1>
       {data.articles.map((article:any, index:number) => (
         <div key={index}>
           <a href={`/${params.slug}/${article.currentSlug}`} >
