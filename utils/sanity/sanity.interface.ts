@@ -18,5 +18,7 @@ export interface networkFull {
 
 export interface articleFull {
   title: string;
+  excerpt: string;
+  gated: boolean;
   currentSlug: string;
 }

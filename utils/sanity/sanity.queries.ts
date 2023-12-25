@@ -10,6 +10,8 @@ const articlesFields = groq`
 `
 const articleFields = groq`
     title,
+    excerpt,
+    gated,
     "currentSlug": slug.current,
 `
 
@@ -24,7 +26,7 @@ export const networkQuery = groq`
 }`
 
 export const articlesQuery = groq`
-*[_type == 'articles' && $slug in network[]->slug.current] | order(date desc) {
+*[_type == 'articles' && $slug in network[]->slug.current && !hidden] | order(date desc) {
   ${articlesFields}
 }`
 

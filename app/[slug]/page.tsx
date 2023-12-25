@@ -1,7 +1,8 @@
 import { networkInterfaces } from "os";
-import { client } from "../lib/sanity.client";
-import { networkFull } from "../lib/sanity.interface";
-import { articlesQuery, networkQuery } from "../lib/sanity.queries";
+import { client } from "../../utils/sanity/sanity.client";
+import { networkFull } from "../../utils/sanity/sanity.interface";
+import { articlesQuery, networkQuery } from "../../utils/sanity/sanity.queries";
+import Header from "@/components/Header";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
@@ -19,15 +20,19 @@ export default async function Network({
   const data:networkFull = await getData(params.slug);
 
   return (
-    <div className="mt-8">
-      <h1>{data.network.title}</h1>
-      {data.articles.map((article:any, index:number) => (
-        <div key={index}>
-          <a href={`/${params.slug}/${article.currentSlug}`} >
-            <h2 className="text-lg line-clamp-2 font-bold">{article.title}</h2>
-          </a>
-        </div>
-      ))}
-    </div>
+    <>
+    
+    <Header />
+      <div className="mt-8">
+        <h1>{data.network?.title}</h1>
+        {data.articles.map((article:any, index:number) => (
+          <div key={index}>
+            <a href={`/${params.slug}/${article.currentSlug}`} >
+              <h2 className="text-lg line-clamp-2 font-bold">{article.title}</h2>
+            </a>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
