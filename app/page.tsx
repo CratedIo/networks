@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <>
       <Header />
-      {data.map((network, index) => (
+      {data.map((network:any, index:number) => (
         <div key={index}>
           <a href={`/${network.currentSlug}`} >
             <h2 className="text-lg line-clamp-2 font-bold">{network.title}</h2>
