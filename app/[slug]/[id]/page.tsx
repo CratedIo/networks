@@ -6,6 +6,8 @@ import { createClient } from '@/utils/supabase/supabase.server'
 import { cookies } from 'next/headers'
 import Login from "@/app/login/page";
 import LoginButton from "@/components/LoginButton";
+import { getUserPremiumAccess, getUserSession } from "@/utils/supabase/supabase.user";
+import { setArticleView } from "@/utils/supabase/supabase.view";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
@@ -14,7 +16,6 @@ async function getData(id: string) {
   return data;
 }
 
-
 export default async function Article({
   params,
 }: {
@@ -22,62 +23,51 @@ export default async function Article({
 }) {
   const articleData:articleFull = await getData(params.id);
 
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const premium = articleData.premium;
+  const gated = articleData.gated;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { session } } = await getUserSession()
 
-  const setNewView = async () => {
-    const { data, error } = await supabase
-    .from("network_view")
-    .insert({
-      article_id: articleData?._id,
-      user_id: user?.id
-    })
-  }
-  if(user) {
-    setNewView()
+  if(session){
+    setArticleView(articleData._id, session.user.id)
   }
 
-async function getAccess () {
-  return supabase
-    .from('user_profile')
-    .select('vantage_client')
-    .eq('id', user?.id)
-    .limit(1)
-    .single()
-}
+  if(premium && session) {
+    var { data: userPremiumAccess } = await getUserPremiumAccess()
+  }
 
-const {
-  data: access
-} = await getAccess()
 
   const Content = ({ data }:any) => {
 
-    const premium = data.premium;
-    const gated = data.gated;
+    if(!premium && !gated) { return ( <p>{data.excerpt}</p> ) }
 
-    if(premium) {
-
-      if(user && access?.vantage_client) {
-        return ( <p>{data.excerpt}</p> )
-      } else  if(user) {
-        return ( <p>You do not have the correct access</p> )
-      }
-      return ( <div>
-        <p>This required premium access</p> 
-        <LoginButton />
-      </div> )
-    }
     if(gated) {
 
-      if(user) {
+      if(session) {
         return ( <p>{data.excerpt}</p> )
       }
       return ( <LoginButton /> )
     }
+
+    if(premium) {
+      if(session && userPremiumAccess?.premium_access) {
+        return ( 
+          <div>
+            <p>You have the correct access</p>
+            <p>{data.excerpt}</p>
+          </div> 
+        )
+      } else if(session && !userPremiumAccess?.premium_access) {
+        return ( <p>You do not have the correct access</p> )
+      }
+      return ( 
+        <div>
+          <p>This required premium access</p> 
+          <LoginButton />
+        </div> 
+      )
+    }
+    
     return ( <p>{data.excerpt}</p> )
     
   }
