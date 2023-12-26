@@ -28,6 +28,7 @@ export default function AuthButton({label, url, pathParam, style }:any) {
                     {label}
                 </Link>
             )
+            break;
         case 1:
             return (
                 <Link
@@ -37,6 +38,7 @@ export default function AuthButton({label, url, pathParam, style }:any) {
                     {label}
                 </Link>
             )
+            break;
         default:
             return (
                 <Link

@@ -25,6 +25,7 @@ export async function getUserSession () {
 
   return { data: { session } }
 }
+
 export async function getUser () {
 
   const cookieStore = cookies()
@@ -34,3 +35,33 @@ export async function getUser () {
 
   return { data: { user } }
 }
+
+export async function setUserSignin (location:string) {
+
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const { data, error } = await supabase
+    .from("user_signin")
+    .insert({
+        user_id: user?.id,
+        location_url: location
+    })
+}
+
+export async function setUserUnsuccessful (email:string, location_url:string, error_message:string) {
+
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
+
+  const { data, error } = await supabase
+  .from("user_unsuccessful")
+  .insert({
+      email: email,
+      location_url: location_url,
+      error_message: error_message
+  })
+}
+

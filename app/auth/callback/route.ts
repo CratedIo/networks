@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/supabase.server'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { setUserSignin } from '@/utils/supabase/supabase.user'
 
 export async function GET(request: Request) {
   // The `/auth/callback` route is required for the server-side auth flow implemented
@@ -16,9 +17,12 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code)
   }
 
+  
+  setUserSignin((next != undefined || next != null)?origin + '/' + next:origin)
+
   // URL to redirect to after sign in process completes
   if(next != undefined || next != null){
-   return NextResponse.redirect(origin + '/' + next)
+    return NextResponse.redirect(origin + '/' + next)
   }
   return NextResponse.redirect(origin)
 }
