@@ -17,8 +17,10 @@ export interface networkFull {
 }
 
 export interface articleFull {
+  _id: string;
   title: string;
+  currentSlug: string;
   excerpt: string;
   gated: boolean;
-  currentSlug: string;
+  premium: boolean;
 }

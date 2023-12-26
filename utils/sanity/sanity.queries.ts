@@ -1,18 +1,20 @@
 import { groq } from 'next-sanity'
 
 const networkFields = groq`
-    title,
-    "currentSlug": slug.current,
+  title,
+  "currentSlug": slug.current,
 `
 const articlesFields = groq`
-    title,
-    "currentSlug": slug.current,
+  title,
+  "currentSlug": slug.current,
 `
 const articleFields = groq`
-    title,
-    excerpt,
-    gated,
-    "currentSlug": slug.current,
+  _id,
+  title,
+  excerpt,
+  gated,
+  premium,
+  "currentSlug": slug.current,
 `
 
 export const networksQuery = groq`

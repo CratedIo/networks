@@ -20,9 +20,8 @@ export default async function Article({
 }: {
   params: { id: string };
 }) {
-  const data:articleFull = await getData(params.id);
+  const articleData:articleFull = await getData(params.id);
 
-  
   const cookieStore = cookies()
   const supabase = createClient(cookieStore)
 
@@ -30,21 +29,65 @@ export default async function Article({
     data: { user },
   } = await supabase.auth.getUser()
 
+  const setNewView = async () => {
+    const { data, error } = await supabase
+    .from("network_view")
+    .insert({
+      article_id: articleData?._id,
+      user_id: user?.id
+    })
+  }
+  if(user) {
+    setNewView()
+  }
+
+async function getAccess () {
+  return supabase
+    .from('user_profile')
+    .select('vantage_client')
+    .eq('id', user?.id)
+    .limit(1)
+    .single()
+}
+
+const {
+  data: access
+} = await getAccess()
+
   const Content = ({ data }:any) => {
+
+    const premium = data.premium;
     const gated = data.gated;
-    return !gated || user ? (
-    <p>{data.excerpt}</p>
-    ) : (
-    <LoginButton />
-    )
+
+    if(premium) {
+
+      if(user && access?.vantage_client) {
+        return ( <p>{data.excerpt}</p> )
+      } else  if(user) {
+        return ( <p>You do not have the correct access</p> )
+      }
+      return ( <div>
+        <p>This required premium access</p> 
+        <LoginButton />
+      </div> )
+    }
+    if(gated) {
+
+      if(user) {
+        return ( <p>{data.excerpt}</p> )
+      }
+      return ( <LoginButton /> )
+    }
+    return ( <p>{data.excerpt}</p> )
+    
   }
   
   return (
     <>
     <Header />
       <div className="mt-8">
-        <h2 className="text-lg line-clamp-2 font-bold">{data.title}</h2>
-        <Content data={data} />
+        <h2 className="text-lg line-clamp-2 font-bold">{articleData.title}</h2>
+        <Content data={articleData} />
       </div>
     </>
   );

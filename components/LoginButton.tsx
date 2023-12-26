@@ -18,7 +18,7 @@ export default function LoginButton() {
     return (
         <Link
         href={`/login`+ getURL()}
-        className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
+        className="py-2 px-3 flex rounded-md no-underline border border-slate-500 bg-btn-background hover:bg-btn-background-hover"
         >
             Login
         </Link>
