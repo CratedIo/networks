@@ -43,7 +43,7 @@ export default async function Article({
       if(session) {
         return ( <p>{data.excerpt}</p> )
       }
-      return ( <AuthButton label={'Sign in'} url={'/signin'} /> )
+      return ( <AuthButton label={'Sign In'} url={'/signin'} /> )
     }
 
     if(premium) {
@@ -60,7 +60,7 @@ export default async function Article({
       return ( 
         <div>
           <p>This required premium access</p> 
-          <AuthButton label={'Sign in'} url={'/signin'} />
+          <AuthButton label={'Sign In'} url={'/signin'} variant={'outline'}/>
         </div> 
       )
     }
@@ -70,12 +70,11 @@ export default async function Article({
   }
   
   return (
-    <>
-    <Header />
-      <div className="mt-8">
-        <h2 className="text-lg line-clamp-2 font-bold">{articleData.title}</h2>
-        <Content data={articleData} />
-      </div>
-    </>
+      <main>
+        <div className="container mx-auto px-5">
+          <h2 className="text-lg line-clamp-2 font-bold">{articleData.title}</h2>
+          <Content data={articleData} />
+        </div>
+      </main>
   );
 }

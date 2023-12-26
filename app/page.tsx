@@ -13,15 +13,16 @@ export default async function Home() {
   const data: networksDirectory[] = await getData();
 
   return (
-    <>
-      <Header />
-      {data.map((network:any, index:number) => (
-        <div key={index}>
-          <a href={`/${network.currentSlug}`} >
-            <h2 className="text-lg line-clamp-2 font-bold">{network.title}</h2>
-          </a>
-        </div>
-      ))}
-    </>
+    <main>
+      <div className="container mx-auto px-5">
+        {data.map((network:any, index:number) => (
+          <div key={index}>
+            <a href={`/${network.currentSlug}`} >
+              <h2 className="text-lg line-clamp-2 font-bold">{network.title}</h2>
+            </a>
+          </div>
+        ))}
+      </div>
+    </main>
   )
 }

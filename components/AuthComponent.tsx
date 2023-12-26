@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/supabase.server'
 import { cookies } from 'next/headers'
 import AuthButton from './AuthButton'
+import { Button } from './ui/button'
 
 export default async function AuthComponent() {
   const cookieStore = cookies()
@@ -24,12 +25,13 @@ export default async function AuthComponent() {
     <div className="flex items-center gap-4">
       Hey, {user.email}!
       <form action={signOut}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-          Sign out
-        </button>
+        <Button variant="outline">
+          Sign Out
+          <span className="sr-only">Toggle theme</span>
+        </Button>
       </form>
     </div>
   ) : (
-    <AuthButton label={'Sign in'} url={'/signin'} style={2} />
+    <AuthButton label={'Sign In'} url={'/signin'} variant={'outline'} />
   )
 }

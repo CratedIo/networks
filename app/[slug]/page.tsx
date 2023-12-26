@@ -19,10 +19,8 @@ export default async function Network({
   const data:networkFull = await getData(params.slug);
 
   return (
-    <>
-    
-    <Header />
-      <div className="mt-8">
+    <main>
+      <div className="container mx-auto px-5">
         <h1>{data.network?.title}</h1>
         {data.articles.map((article:any, index:number) => (
           <div key={index}>
@@ -32,6 +30,6 @@ export default async function Network({
           </div>
         ))}
       </div>
-    </>
+    </main>
   );
 }
