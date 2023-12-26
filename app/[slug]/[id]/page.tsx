@@ -2,12 +2,9 @@ import { articleQuery } from "@/utils/sanity/sanity.queries";
 import { client } from "../../../utils/sanity/sanity.client";
 import { articleFull } from "../../../utils/sanity/sanity.interface";
 import Header from "@/components/Header";
-import { createClient } from '@/utils/supabase/supabase.server'
-import { cookies } from 'next/headers'
-import Login from "@/app/login/page";
-import LoginButton from "@/components/LoginButton";
 import { getUserPremiumAccess, getUserSession } from "@/utils/supabase/supabase.user";
 import { setArticleView } from "@/utils/supabase/supabase.view";
+import AuthButton from "@/components/AuthButton";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
@@ -46,7 +43,7 @@ export default async function Article({
       if(session) {
         return ( <p>{data.excerpt}</p> )
       }
-      return ( <LoginButton /> )
+      return ( <AuthButton label={'Sign in'} url={'/signin'} /> )
     }
 
     if(premium) {
@@ -63,7 +60,7 @@ export default async function Article({
       return ( 
         <div>
           <p>This required premium access</p> 
-          <LoginButton />
+          <AuthButton label={'Sign in'} url={'/signin'} />
         </div> 
       )
     }

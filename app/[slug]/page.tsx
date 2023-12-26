@@ -1,4 +1,3 @@
-import { networkInterfaces } from "os";
 import { client } from "../../utils/sanity/sanity.client";
 import { networkFull } from "../../utils/sanity/sanity.interface";
 import { articlesQuery, networkQuery } from "../../utils/sanity/sanity.queries";

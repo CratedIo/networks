@@ -1,6 +1,6 @@
 import { createClient } from '@/utils/supabase/supabase.server'
 import { cookies } from 'next/headers'
-import LoginButton from '@/components/LoginButton'
+import AuthButton from './AuthButton'
 
 export default async function AuthComponent() {
   const cookieStore = cookies()
@@ -25,11 +25,11 @@ export default async function AuthComponent() {
       Hey, {user.email}!
       <form action={signOut}>
         <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-          Logout
+          Sign out
         </button>
       </form>
     </div>
   ) : (
-      <LoginButton/>
+    <AuthButton label={'Sign in'} url={'/signin'} style={2} />
   )
 }

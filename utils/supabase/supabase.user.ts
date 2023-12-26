@@ -25,3 +25,12 @@ export async function getUserSession () {
 
   return { data: { session } }
 }
+export async function getUser () {
+
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
+  
+  const { data: { user } } = await supabase.auth.getUser()
+
+  return { data: { user } }
+}

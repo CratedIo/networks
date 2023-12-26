@@ -1,9 +1,9 @@
-import Link from 'next/link'
 import { headers, cookies } from 'next/headers'
 import { createClient } from '@/utils/supabase/supabase.server'
-import { redirect, usePathname } from 'next/navigation'
+import { redirect } from 'next/navigation'
+import AuthButton from '@/components/AuthButton'
 
-export default async function Login({
+export default async function Signup({
   searchParams,
 }: {
   searchParams: { message: string, next: string }
@@ -45,7 +45,7 @@ export default async function Login({
     })
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      return redirect('/signup?message=Could not authenticate user')
     }
 
     return redirect(getURL())
@@ -74,6 +74,15 @@ export default async function Login({
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
 
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: getURL(),
+      },
+    })
+
+    /*
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -81,12 +90,13 @@ export default async function Login({
         emailRedirectTo: getURL(),
       },
     })
+    */
 
     if (error) {
-      return redirect('/login?message=Could not authenticate user')
+      return redirect('/signup?message=Could not authenticate user')
     }
 
-    return redirect('/login?message=Check email to continue sign in process')
+    return redirect('/signup?message=Check email to continue sign in process')
   }
 
 if (user) {
@@ -96,7 +106,7 @@ if (user) {
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
       <form
         className="animate-in flex-1 flex flex-col w-full justify-center gap-2 text-foreground"
-        action={signIn}
+        action={signUp}
       >
         <label className="text-md" htmlFor="email">
           Email
@@ -107,6 +117,26 @@ if (user) {
           placeholder="you@example.com"
           required
         />
+        <button
+          formAction={signUp}
+          className="bg-emerald-700 rounded-md px-4 py-2 text-foreground mb-2"
+        >
+          Sign Up
+        </button>
+        {searchParams?.message && (
+          <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
+            {searchParams.message}
+          </p>
+        )}
+      </form>
+      <AuthButton label={'Sign In'} url={'/signin'} pathParam={searchParams.next} style={1} />
+    </div>
+  )
+  }
+}
+
+/*
+
         <label className="text-md" htmlFor="password">
           Password
         </label>
@@ -117,22 +147,4 @@ if (user) {
           placeholder="••••••••"
           required
         />
-        <button className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2">
-          Sign In
-        </button>
-        <button
-          formAction={signUp}
-          className="border border-foreground/20 rounded-md px-4 py-2 text-foreground mb-2"
-        >
-          Sign Up
-        </button>
-        {searchParams?.message && (
-          <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
-            {searchParams.message}
-          </p>
-        )}
-      </form>
-    </div>
-  )
-  }
-}
+        */
