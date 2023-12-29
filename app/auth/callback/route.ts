@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/supabase.server'
+import { createClientServer } from '@/utils/supabase/supabase.server'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { setUserSignin } from '@/utils/supabase/supabase.user'
@@ -13,11 +13,11 @@ export async function GET(request: Request) {
 
   if (code) {
     const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
+    const supabase = createClientServer(cookieStore)
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  
+  //Track when users signin
   setUserSignin((next != undefined || next != null)?origin + '/' + next:origin)
 
   // URL to redirect to after sign in process completes

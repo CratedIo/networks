@@ -1,11 +1,12 @@
-import { createClient } from '@/utils/supabase/supabase.server'
+'use server'
+import { createClientServer } from '@/utils/supabase/supabase.server'
 import { cookies } from 'next/headers'
 
 
 export async function setArticleView (article_id:string, user_id:string) {
 
     const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
+    const supabase = createClientServer(cookieStore)
 
     const { data, error } = await supabase
     .from("network_view")

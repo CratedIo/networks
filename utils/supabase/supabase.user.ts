@@ -1,12 +1,12 @@
 'use server'
-import { createClient } from '@/utils/supabase/supabase.server'
+import { createClientServer } from '@/utils/supabase/supabase.server'
 import { cookies } from 'next/headers'
 
 
 export async function getUserPremiumAccess () {
 
   const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = createClientServer(cookieStore)
 
   const { data: userPremiumAccess } = await supabase
     .from("user_profile")
@@ -19,7 +19,7 @@ export async function getUserPremiumAccess () {
 export async function getUserSession () {
 
   const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = createClientServer(cookieStore)
   
   const { data: { session } } = await supabase.auth.getSession()
 
@@ -29,7 +29,7 @@ export async function getUserSession () {
 export async function getUser () {
 
   const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = createClientServer(cookieStore)
   
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -39,7 +39,7 @@ export async function getUser () {
 export async function setUserSignin (location:string) {
 
     const cookieStore = cookies()
-    const supabase = createClient(cookieStore)
+    const supabase = createClientServer(cookieStore)
 
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -54,7 +54,7 @@ export async function setUserSignin (location:string) {
 export async function setUserUnsuccessful (email:string, location_url:string, error_message:string) {
 
   const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = createClientServer(cookieStore)
 
   const { data, error } = await supabase
   .from("user_unsuccessful")

@@ -1,6 +1,6 @@
-import { AuthSignInForm } from '@/components/auth/AuthSignInForm'
+import { AuthSignOutForm } from '@/components/auth/AuthSignOutForm';
 
-export default async function SignIn({
+export default async function SignOut({
   searchParams,
 }: {
   searchParams: { next: string }
@@ -13,7 +13,7 @@ export default async function SignIn({
       <div className="container mx-auto px-5">
           <div className="flex justify-center items-center w-full min-h-screen">
             <div className="flex flex-col sm:max-w-md w-full justify-center gap-2">
-              <AuthSignInForm redirectParam={redirect}/>
+              <AuthSignOutForm redirectParam={redirect}/>
             </div>
           </div>
       </div>

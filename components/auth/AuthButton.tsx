@@ -2,21 +2,22 @@
  
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
  
 export default function AuthButton({label, url, pathParam, variant }:any) {
 
-    const userPath = pathParam
+    const excludedPaths = ['/', '/signup', '/signin', '/signout']
     const pathname = usePathname()
 
     const getURL = () => {
         
-        if(pathname == '/') {
-            return ''
-        } else if(userPath) {
-            return `?next=${userPath}`
+        if(!excludedPaths.includes(pathname)) {
+            return `?next=${pathname.substring(1)}`
+        } 
+        if(pathParam) {
+            return `?next=${pathParam}`
         }
-        return `?next=${pathname.substring(1)}`
+        return ''
     }
 
     return (
