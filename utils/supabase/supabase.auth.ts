@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createClientServer } from "./supabase.server";
 import { createClientBrowser } from "./supabase.client";
 import { redirect } from "next/navigation";
+import { SendSignUpEmail } from "../resend/resend.send";
 
 export async function AuthInWithEmail( data:{
     email:string;
@@ -11,21 +12,28 @@ export async function AuthInWithEmail( data:{
     create:boolean;
 }) {
     const redirectPath = data.redirect ? '?next=' + data.redirect : '';
-    const metaValues = data.meta_data
 
     const cookieStore = cookies()
     const supabase = createClientServer(cookieStore)
 
+    
     const result = await supabase.auth.signInWithOtp({
         email:data.email,
         options: {
-            data:metaValues,
+            data:data.meta_data,
             shouldCreateUser: data.create,
             emailRedirectTo: 'http://localhost:3000/auth/callback' + redirectPath,
         },
       })
 
+    if(result.error) {
+        const send = await SendSignUpEmail( data.email, redirectPath )
+    }
+    if(!result.error) {
+        console.log('no error')
+    }
     return JSON.stringify(result)
+    
 }
 
 export async function AuthInWithEmailResend( data:{
@@ -34,6 +42,7 @@ export async function AuthInWithEmailResend( data:{
 }) {
     const redirectPath = data.redirect ? '?next=' + data.redirect : '';
 
+    try {
     const cookieStore = cookies()
     const supabase = createClientServer(cookieStore)
 
@@ -44,8 +53,13 @@ export async function AuthInWithEmailResend( data:{
             emailRedirectTo: 'http://localhost:3000/auth/callback' + redirectPath,
         },
       })
-
-    return JSON.stringify(result)
+      console.log('hello');
+      return JSON.stringify(result)
+    } catch (error) {
+        //const send = await SendSignUpEmail()
+        return console.log(error);
+    }
+    
 }
 
 export async function AuthDomainValidation (email:string){

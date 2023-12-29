@@ -20,7 +20,6 @@ export function AuthSignOutForm( { redirectParam }:any ) {
   })
  
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    
     const result:any = await AuthOut();
   }
   

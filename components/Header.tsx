@@ -12,7 +12,6 @@ export default function Header() {
       </Link>
       <div className="flex justify-between gap-4 items-center text-sm">
         <AuthComponent />
-        <ModeToggle />
       </div>
     </nav>
   )

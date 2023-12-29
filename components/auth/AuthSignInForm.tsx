@@ -17,9 +17,10 @@ import {
 import { Input } from "@/components/ui/input"
 import { AuthDomainValidation, AuthInWithEmail } from "@/utils/supabase/supabase.auth"
 import AuthButton from "./AuthButton"
-import { SendHorizontal } from "lucide-react"
+import { Loader2, SendHorizontal } from "lucide-react"
 import { useState } from "react"
 import { redirect } from "next/navigation"
+import { SalesforceSignInHandler } from "@/utils/salesforce/salesforce.handler"
 
 const formSchema = z.object({
     email: z
@@ -36,6 +37,7 @@ const formSchema = z.object({
 export function AuthSignInForm( { redirectParam }:any ) {
 
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   
     
   const form = useForm<z.infer<typeof formSchema>>({
@@ -46,6 +48,8 @@ export function AuthSignInForm( { redirectParam }:any ) {
   })
  
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    setLoading(true)
     
     const result:any = await AuthInWithEmail({ 
       email:values.email, 
@@ -54,11 +58,9 @@ export function AuthSignInForm( { redirectParam }:any ) {
       create:false 
     });
 
-    const { error } = JSON.parse(result)
-
-    if(error == null) {
-      setShow(true)
-    }
+    setShow(true)
+    
+    //SalesforceSignInHandler(values.email)
     
   }
 
@@ -83,7 +85,7 @@ export function AuthSignInForm( { redirectParam }:any ) {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full flex gap-2" >Sign In</Button>
+            <Button type="submit" className="w-full flex gap-2" > {loading && <Loader2 className="h-4 w-4 animate-spin"/>} Sign In</Button>
           </form>
           <div className="pt-4 text-center text-sm font-medium">
                 <p>By clicking continue, you agree to our Terms of Service and Privacy Policy.</p>

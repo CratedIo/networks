@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { Check, ChevronsUpDown, SendHorizontal } from "lucide-react"
+import { Check, ChevronsUpDown, Loader2, SendHorizontal } from "lucide-react"
 import {
   Command,
   CommandEmpty,
@@ -34,6 +34,7 @@ import { AuthDomainValidation, AuthInWithEmail } from "@/utils/supabase/supabase
 import AuthButton from "./AuthButton"
 import { SalesforceSignUpHandler } from "@/utils/salesforce/salesforce.handler"
 import { useState } from "react"
+import { country_list, industry_list } from "@/utils/data/lists"
 const formSchema = z.object({
   first_name: z.string().min(1, { message: "First name is required" }).max(255, { message: "Too long" }),
   last_name: z.string().min(1, { message: "Last name is required" }).max(255, { message: "Too long" }),
@@ -57,18 +58,11 @@ const formSchema = z.object({
   consent: z.boolean(),
 });
 
-const industry_list = [
-  { label: "Automotive", value: "automotive" },
-  { label: "Construction", value: "construction" },
-]
-const country_list = [
-  { label: "United States", value: "United States" },
-  { label: "Canada", value: "Canada" },
-]
 
 export function AuthSignUpForm( { redirectParam }:any ) {
 
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,21 +78,22 @@ export function AuthSignUpForm( { redirectParam }:any ) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    const meta_values = {first_name: values.first_name, last_name: values.last_name};
+    setLoading(true)
+
     redirectParam = redirectParam != null ? redirectParam : false; 
 
     const result:any = await AuthInWithEmail({ 
       email:values.email, 
       redirect: redirectParam, 
-      meta_data:meta_values, 
+      meta_data: {
+        first_name: values.first_name,
+        last_name: values.last_name
+      }, 
       create:true 
     });
-    
-    const { error } = JSON.parse(result)
 
-    if(error == null) {
-      setShow(true)
-    }
+    setShow(true)
+    
     //SalesforceSignUpHandler(values.email)
 
   }
@@ -224,11 +219,11 @@ export function AuthSignUpForm( { redirectParam }:any ) {
                                      </Button>
                                    </FormControl>
                                  </PopoverTrigger>
-                                 <PopoverContent className="w-[200px] p-0">
+                                 <PopoverContent className="w-full max-w-[400px] p-0">
                                    <Command>
                                      <CommandInput placeholder="Search industries..." />
                                      <CommandEmpty>No industries found.</CommandEmpty>
-                                     <CommandGroup>
+                                     <CommandGroup className=" overflow-auto max-h-[300px]">
                                        { industry_list.map((item) => (
                                          <CommandItem
                                            value={item.label}
@@ -278,11 +273,11 @@ export function AuthSignUpForm( { redirectParam }:any ) {
                                      </Button>
                                    </FormControl>
                                  </PopoverTrigger>
-                                 <PopoverContent className="w-[200px] p-0">
+                                 <PopoverContent className="w-full max-w-[400px] p-0">
                                    <Command>
                                      <CommandInput placeholder="Search countries..." />
                                      <CommandEmpty>No countires found.</CommandEmpty>
-                                     <CommandGroup>
+                                     <CommandGroup className=" overflow-auto max-h-[300px]">
                                        { country_list.map((item) => (
                                          <CommandItem
                                            value={item.label}
@@ -428,7 +423,7 @@ export function AuthSignUpForm( { redirectParam }:any ) {
                                 </FormItem>
                               )}
                             />
-            <Button type="submit">Sign Up</Button>
+            <Button type="submit" className="w-full flex gap-2">{loading && <Loader2 className="h-4 w-4 animate-spin"/>} Sign Up</Button>
             </div>
           </form>
         </Form>
