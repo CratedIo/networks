@@ -5,6 +5,10 @@ import { createClientBrowser } from "./supabase.client";
 import { redirect } from "next/navigation";
 import { SendSignUpEmail } from "../resend/resend.send";
 
+const baseUrl = process.env.VERCEL_URL
+? `https://${process.env.VERCEL_URL}`
+: 'http://localhost:3000';
+
 export async function AuthInWithEmail( data:{
     email:string;
     redirect:any;
@@ -22,7 +26,7 @@ export async function AuthInWithEmail( data:{
         options: {
             data:data.meta_data,
             shouldCreateUser: data.create,
-            emailRedirectTo: 'http://localhost:3000/auth/callback' + redirectPath,
+            emailRedirectTo: baseUrl + '/auth/callback' + redirectPath,
         },
       })
 
@@ -50,7 +54,7 @@ export async function AuthInWithEmailResend( data:{
         type: 'signup',
         email:data.email,
         options: {
-            emailRedirectTo: 'http://localhost:3000/auth/callback' + redirectPath,
+            emailRedirectTo: baseUrl + '/auth/callback' + redirectPath,
         },
       })
       console.log('hello');

@@ -46,13 +46,14 @@ export default async function AuthComponent() {
             </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuLabel><ModeToggle /></DropdownMenuLabel>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
+          <DropdownMenuItem>Account</DropdownMenuItem>
+          <DropdownMenuItem>Upgrade</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
           
           
-          <form action={signOut}>
-            <button>
+          <form action={signOut} className="w-full">
+            <button className="w-full text-left">
               Sign Out
               <span className="sr-only">Sign Out</span>
             </button>

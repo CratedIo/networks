@@ -6,12 +6,12 @@ import Header from '@/components/Header'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : 'http://localhost:3000'
+const baseUrl = process.env.VERCEL_URL
+? `https://${process.env.VERCEL_URL}`
+: 'http://localhost:3000';
 
 export const metadata = {
-  metadataBase: new URL(defaultUrl),
+  metadataBase: new URL(baseUrl),
   title: 'Crated Template',
   description: 'Next.js, Sanity, Supabase, Tailwind',
 }
