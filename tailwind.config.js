@@ -17,6 +17,10 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        "noto-medium": "var(--font-noto)",
+        "inter-medium": "var(--font-inter)", 
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

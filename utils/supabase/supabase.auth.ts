@@ -17,6 +17,8 @@ export async function AuthInWithEmail( data:{
 }) {
     const redirectPath = data.redirect ? '?next=' + data.redirect : '';
 
+    console.log(data)
+
     const cookieStore = cookies()
     const supabase = createClientServer(cookieStore)
 
@@ -29,6 +31,8 @@ export async function AuthInWithEmail( data:{
             emailRedirectTo: baseUrl + '/auth/callback' + redirectPath,
         },
       })
+
+      console.log(result)
 
     if(result.error) {
         const send = await SendSignUpEmail( data.email, redirectPath )
@@ -57,7 +61,6 @@ export async function AuthInWithEmailResend( data:{
             emailRedirectTo: baseUrl + '/auth/callback' + redirectPath,
         },
       })
-      console.log('hello');
       return JSON.stringify(result)
     } catch (error) {
         //const send = await SendSignUpEmail()
@@ -68,10 +71,20 @@ export async function AuthInWithEmailResend( data:{
 
 export async function AuthDomainValidation (email:string){
 
-    const blacklistDomains = ['yahoo.com', 'hotmail.com']
+    const cookieStore = cookies()
+    const supabase = createClientServer(cookieStore)
+
+    const { data, error } = await supabase
+        .from("domain_blacklist")
+        .select('domain')
+
+    const blacklistDomains = data?.map(function (obj) {
+        return obj.domain;
+      });
+
     const domain:string = email.split('@').pop()!
 
-    if(blacklistDomains.includes(domain)) {
+    if(blacklistDomains?.includes(domain)) {
         await AuthInEmailUnsuccessful(email)
         return false
     }

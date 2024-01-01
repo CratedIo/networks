@@ -21,7 +21,8 @@ export interface networkFull {
       categories: [];
       authors: [];
     }
-  ]
+  ],
+  total:number
 }
 
 export interface articleFull {
@@ -34,6 +35,7 @@ export interface articleFull {
   excerpt: string;
   cover_image:any;
   categories: [];
+  format: [];
   authors: [];
   layout: string;
   hidden: boolean;
@@ -43,4 +45,5 @@ export interface articleFull {
   meta_keywords: string;
   meta_description: string;
   meta_image: [];
+  additional_slugs: [];
 }

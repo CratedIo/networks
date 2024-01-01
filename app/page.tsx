@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Link from "next/link";
 import { client } from "../utils/sanity/sanity.client";
 import { networksDirectory } from "../utils/sanity/sanity.interface";
 import { networksQuery } from "../utils/sanity/sanity.queries";
@@ -14,12 +14,12 @@ export default async function Home() {
 
   return (
     <main>
-      <div className="container mx-auto px-5">
+      <div className="container mx-auto px-5 pt-32">
         {data.map((network:any, index:number) => (
           <div key={index}>
-            <a href={`/${network.currentSlug}`} >
+            <Link href={`/${network.currentSlug}`} >
               <h2 className="text-lg line-clamp-2 font-bold">{network.title}</h2>
-            </a>
+            </Link>
           </div>
         ))}
       </div>

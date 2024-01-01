@@ -1,10 +1,20 @@
 import type { Metadata } from 'next'
 import { ThemeProvider } from "@/components/theme-provider"
-import { Inter } from 'next/font/google'
+import { Prata, Poppins } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
+import { AuthWrapper } from '@/components/context/AuthWrapper'
 
-const inter = Inter({ subsets: ['latin'] })
+const primaryFont = Prata({ 
+  subsets: ['latin'],
+  weight: "400",
+  variable: '--font-primary'
+ })
+const secondaryFont = Poppins({ 
+  subsets: ['latin'],
+  weight: "300",
+  variable: '--font-secondary'
+ })
 
 const baseUrl = process.env.VERCEL_URL
 ? `https://${process.env.VERCEL_URL}`
@@ -12,8 +22,6 @@ const baseUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(baseUrl),
-  title: 'Crated Template',
-  description: 'Next.js, Sanity, Supabase, Tailwind',
 }
 
 export default function RootLayout({
@@ -21,8 +29,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  
   return (
-    <html lang="en" className={inter.className} /*suppressHydrationWarning*/ >
+    <html lang="en" className={`${primaryFont.variable} ${secondaryFont.className} `} /*suppressHydrationWarning*/ >
       <body className="bg-background text-foreground">
         <ThemeProvider
             attribute="class"
@@ -30,8 +39,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Header />
-          {children}
+            <AuthWrapper>
+              <Header />
+              {children}
+            </AuthWrapper>
         </ThemeProvider>
       </body>
     </html>

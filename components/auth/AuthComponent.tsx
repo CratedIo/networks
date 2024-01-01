@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { ModeToggle } from '../ModeToggle'
+import { AvatarComponent } from '../users/AvatarComponent'
 
 export default async function AuthComponent() {
   const cookieStore = cookies()
@@ -28,16 +29,13 @@ export default async function AuthComponent() {
   }
 
   if (session) {
-    const inititals = session.user.user_metadata.first_name[0] + session.user.user_metadata.last_name[0]
+    const name = session.user.user_metadata.first_name + session.user.user_metadata.last_name
   
     return  (
       <div className="flex items-center gap-4">
         <DropdownMenu>
         <DropdownMenuTrigger>
-        <Avatar>
-          <AvatarImage src="" />
-          <AvatarFallback>{inititals}</AvatarFallback>
-        </Avatar>
+          <AvatarComponent image={null} name={name} />
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" align="end" className="w-64">
           <DropdownMenuLabel>

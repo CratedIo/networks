@@ -4,14 +4,26 @@ const networkFields = groq`
   title,
   "currentSlug": slug.current,
   overview,
-  cover_image
+  cover_article{
+    title,
+    description,
+    image{asset->{url}},
+    article->{
+      title,
+      "slug": slug.current,
+    }
+  }
 `
 const articlesFields = groq`
+  _id,
   title,
   "currentSlug": slug.current,
   cover_image{asset->{url}},
   date,
   categories[]->{
+    title
+    },
+  format->{
     title
     },
   authors
@@ -31,6 +43,9 @@ const articleFields = groq`
   categories[]->{
     title
     },
+  format[]->{
+    title
+    },
   authors[]->{
     name,
     biography,
@@ -43,25 +58,25 @@ const articleFields = groq`
   meta_title,
   meta_keywords,
   meta_description,
-  meta_image
+  meta_image,
+  additional_slugs
 `
-
 export const networksQuery = groq`
 *[_type == 'networks'] {
   ${networkFields}
 }`
 
-export const networkQuery = groq`
-*[_type == 'networks' && slug.current == $slug][0] {
-  ${networkFields}
-}`
-
-export const articlesQuery = groq`
-*[_type == 'articles' && $slug in network[]->slug.current && !hidden] | order(date desc) {
-  ${articlesFields}
-}`
-
+export const networkQuery = groq`{
+"network": *[_type == 'networks' && slug.current == $slug][0] {
+    ${networkFields}
+  },
+"articles": *[_type == 'articles' && $slug in network[]->slug.current && !hidden] | order(date desc) [$start...$end] {
+    ${articlesFields}
+  },
+"total": count(*[_type == 'articles' && $slug in network[]->slug.current && !hidden]) 
+}
+`
 export const articleQuery = groq`
-*[_type == 'articles' && slug.current == $id][0] {
+*[_type == 'articles' && (slug.current == $id || $id in additional_slugs)][0] {
   ${articleFields}
 }`

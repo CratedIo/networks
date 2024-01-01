@@ -1,6 +1,7 @@
 'use server'
 import { createClientServer } from '@/utils/supabase/supabase.server'
 import { cookies } from 'next/headers'
+import { createClientBrowser } from './supabase.client'
 
 
 export async function getUserPremiumAccess () {
@@ -14,6 +15,35 @@ export async function getUserPremiumAccess () {
     .single()
 
   return { data: userPremiumAccess }
+}
+
+export async function DomainWhitelistValidation (email:string, id:string) {
+
+  const cookieStore = cookies()
+  const supabase = createClientServer(cookieStore)
+
+  const { data, error } = await supabase
+    .from("domain_whitelist")
+    .select('domain')
+
+  const whitelistDomains = data?.map(function (obj) {
+    return obj.domain;
+  });
+
+  const domain:string = email.split('@').pop()!
+
+  if(whitelistDomains?.includes(domain)) {
+
+    const { data, error } = await supabase
+      .from("user_profile")
+      .update({
+        premium_access:true
+      })
+      .eq('id', id)
+      .single()
+    return true
+  }
+  return false
 }
 
 export async function getUserSession () {

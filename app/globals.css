@@ -1,70 +1,65 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
+.font-primary-medium {
+  font-family: var(--font-primary);
+}
+
+.font-secondary-medium {
+  font-family: var(--font-secondary);
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
-
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
- 
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
- 
-    --primary: 240 5.9% 10%;
+    --primary: 158.1 64.4% 51.6%;
     --primary-foreground: 0 0% 98%;
- 
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
- 
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
- 
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
- 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
- 
+    --ring: 158.1 64.4% 51.6%;
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
- 
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
- 
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
- 
-    --primary: 0 0% 98%;
+    --primary: 158.1 64.4% 51.6%;
     --primary-foreground: 240 5.9% 10%;
- 
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
- 
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
- 
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
- 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
- 
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --ring: 158.1 64.4% 51.6%;
   }
 }
+
+
+
  
 @layer base {
   * {
@@ -74,3 +69,112 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.authSent {
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+   }
+}
+
+.news_grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(14, auto);
+    }
+    /*
+    .div1 { grid-area: 1 / 1 / 5 / 3; }
+    .div2 { grid-area: 1 / 3 / 2 / 4; }
+    .div3 { grid-area: 2 / 3 / 3 / 4; }
+    .div4 { grid-area: 3 / 3 / 4 / 4; }
+    .div5 { grid-area: 4 / 3 / 5 / 4; }
+    .div6 { grid-area: 5 / 1 / 8 / 3; }
+    .div7 { grid-area: 5 / 3 / 6 / 4; }
+    .div8 { grid-area: 6 / 3 / 7 / 4; }
+    .div9 { grid-area: 7 / 3 / 8 / 4; }
+    .div10 { grid-area: 8 / 1 / 9 / 2; }
+    .div11 { grid-area: 9 / 1 / 10 / 2; }
+    .div12 { grid-area: 8 / 2 / 10 / 3; }
+    .div13 { grid-area: 8 / 3 / 10 / 4; }
+    .div14 { grid-area: 10 / 1 / 11 / 2; }
+    .div15 { grid-area: 10 / 2 / 11 / 3; }
+    .div16 { grid-area: 10 / 3 / 11 / 4; }
+    .div17 { grid-area: 11 / 1 / 12 / 2; }
+    .div18 { grid-area: 12 / 1 / 13 / 2; }
+    .div19 { grid-area: 11 / 2 / 13 / 4; }
+    */
+
+    .div1 { grid-area: 1 / 1 / 5 / 3; }
+    .div2 { grid-area: 1 / 3 / 2 / 4; }
+    .div3 { grid-area: 2 / 3 / 3 / 4; }
+    .div4 { grid-area: 3 / 3 / 4 / 4; }
+    .div5 { grid-area: 4 / 3 / 5 / 4; }
+    .div6 { grid-area: 5 / 1 / 8 / 3; }
+    .div7 { grid-area: 5 / 3 / 6 / 4; }
+    .div8 { grid-area: 6 / 3 / 7 / 4; }
+    .div9 { grid-area: 7 / 3 / 8 / 4; }
+    .div10 { grid-area: 8 / 1 / 9 / 4; }
+    .div11 { grid-area: 9 / 1 / 10 / 2; }
+    .div12 { grid-area: 10 / 1 / 11 / 2; }
+    .div13 { grid-area: 9 / 2 / 11 / 3; }
+    .div14 { grid-area: 9 / 3 / 11 / 4; }
+    .div15 { grid-area: 11 / 1 / 12 / 2; }
+    .div16 { grid-area: 11 / 2 / 12 / 3; }
+    .div17 { grid-area: 11 / 3 / 12 / 4; }
+    .div18 { grid-area: 12 / 1 / 13 / 2; }
+    .div19 { grid-area: 13 / 1 / 14 / 2; }
+    .div20 { grid-area: 14 / 1 / 15 / 2; }
+    .div21 { grid-area: 12 / 2 / 15 / 4; }
+
+    .div1 a, .div13 a, .div14 a {
+      @apply flex-col
+    }
+    .div1 a {
+      @apply flex-col-reverse
+    }
+    .div6 a {
+      @apply flex-row-reverse
+    }
+    .div1 h3 {
+      @apply text-5xl leading-snug;
+    }
+    .div6 h3, .div21 h3 {
+      @apply text-3xl leading-snug;
+    }
+    .news_grid > div:not(.div10) {
+      @apply border-b pb-4;
+    }
+    .news_grid .div6, .news_grid .div9, .news_grid .div15, .news_grid .div16, .news_grid .div17 {
+      @apply pb-10
+    }
+
+    .div1 img {
+      height: 400px;
+    }
+    .div6 img {
+      height: 352px;
+      max-width: 50%;
+    }
+
+    .div11 img, .div12 img, .div15 img, .div16 img, .div17 img {
+      height: 200px;
+      max-width: 50%;
+    }
+
+    .div13 img, .div14 img {
+      height: 350px;
+    }
+    
+    .div21 img {
+      height: 352px;
+      max-width: 60%;
+    }

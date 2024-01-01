@@ -9,7 +9,7 @@ export async function setArticleView (article_id:string, user_id:string) {
     const supabase = createClientServer(cookieStore)
 
     const { data, error } = await supabase
-    .from("network_view")
+    .from("creative_view")
     .insert({
         article_id: article_id,
         user_id: user_id

@@ -6,7 +6,7 @@ import { Laugh } from 'lucide-react';
 export default function Header() {
 
   return (
-    <nav className="w-full flex items-center justify-between h-16 p-4">
+    <nav className="w-full flex items-center justify-between h-16 p-4 absolute z-10">
       <Link href={'/'}>
       <Laugh />
       </Link>

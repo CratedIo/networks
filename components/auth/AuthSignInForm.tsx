@@ -21,6 +21,7 @@ import { Loader2, SendHorizontal } from "lucide-react"
 import { useState } from "react"
 import { redirect } from "next/navigation"
 import { SalesforceSignInHandler } from "@/utils/salesforce/salesforce.handler"
+import { DomainWhitelistValidation } from "@/utils/supabase/supabase.user"
 
 const formSchema = z.object({
     email: z
@@ -50,6 +51,7 @@ export function AuthSignInForm( { redirectParam }:any ) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
 
     setLoading(true)
+    setShow(true)
     
     const result:any = await AuthInWithEmail({ 
       email:values.email, 
@@ -58,8 +60,6 @@ export function AuthSignInForm( { redirectParam }:any ) {
       create:false 
     });
 
-    setShow(true)
-    
     //SalesforceSignInHandler(values.email)
     
   }
@@ -96,7 +96,7 @@ export function AuthSignInForm( { redirectParam }:any ) {
             
         </Form>
       :
-      <div className="flex flex-col items-center w-full gap-16">
+      <div className="flex flex-col items-center w-full gap-16 authSent">
         <div className="flex items-center gap-4">
           <span className="relative flex h-3 w-3 animate-[bounce_1.2s_ease-in-out_infinite]">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
