@@ -42,6 +42,7 @@ async function getData(id: string) {
   return data;
 }
 
+/*
 export async function generateMetadata(
   { params }: Props,
   parent: ResolvedMetadata
@@ -58,7 +59,7 @@ export async function generateMetadata(
   };
 }
 
-
+*/
 
 export default async function Article({ params }: Props ) {
 
