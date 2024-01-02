@@ -133,7 +133,7 @@ export default async function Article({ params }: Props ) {
 
   return (
     <main>
-      <Header title={ network[0].title } slug={ network[0].slug.current } />
+      <Header title={ 'Climate Innovation Network' } slug={ '/climate' } />
       <div className="container mx-auto px-5 pt-32">
         <h2 className="text-5xl pb-8 font-primary-medium max-w-4xl">{title}</h2>
         <p className="font-normal text-sm">
