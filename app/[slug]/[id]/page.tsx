@@ -27,6 +27,7 @@ import { AvatarComponent } from "@/components/users/AvatarComponent";
 import { Metadata, ResolvedMetadata } from "next";
 import { BiographyText } from "@/components/type/BiographyText";
 import Link from "next/link";
+import Header from "@/components/Header";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
@@ -129,8 +130,10 @@ export default async function Article({ params }: Props ) {
     return <PortableText value={data.content} components={RichText} />;
   };
 
+
   return (
     <main>
+      <Header title={ network[0].title } slug={ network[0].slug.current } />
       <div className="container mx-auto px-5 pt-32">
         <h2 className="text-5xl pb-8 font-primary-medium max-w-4xl">{title}</h2>
         <p className="font-normal text-sm">

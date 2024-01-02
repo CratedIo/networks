@@ -150,6 +150,9 @@
     .div6 h3, .div21 h3 {
       @apply text-3xl leading-snug;
     }
+    .div13 h3, .div14 h3 {
+      @apply text-2xl leading-snug;
+    }
     .news_grid > div:not(.div10) {
       @apply border-b pb-4;
     }
@@ -187,4 +190,14 @@
     }
     .main-contant li {
       @apply pb-6
+    }
+
+
+
+    .advert {
+      background-color: transparent ;
+      background-image:
+        repeating-linear-gradient(45deg, rgba(34, 34, 34, 0),rgba(34, 34, 34, 0) 5px, rgba(34, 34, 34, 0.3) 5px, rgba(34, 34, 34, 0.3) 6px),
+        repeating-linear-gradient(-45deg, rgba(34, 34, 34, 0), rgba(34, 34, 34, 0) 5px, rgba(34, 34, 34, 0.3) 5px, rgba(34, 34, 34, 0.3) 6px);
+      background-size: 8px 8px, 8px 8px;
     }

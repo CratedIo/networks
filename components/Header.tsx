@@ -7,7 +7,7 @@ export default function Header( network: {title: any, slug:any}) {
 
   return (
     <nav className="w-full flex items-center justify-between h-16 p-4 absolute z-10">
-      <Link href={ network ? network.slug : '/'} className="flex justify-center items-center gap-4">
+      <Link href={ network ? '/'+ network.slug : '/'} className="flex justify-center items-center gap-4">
         <Laugh />
         {network &&
         <p>{network.title}</p>

@@ -58,6 +58,7 @@ export default async function Network({
     hero = false
   }
 
+  console.log(featured_articles)
 
   return (
     <>
@@ -98,16 +99,19 @@ export default async function Network({
                 </div>
               </div>
               <div className="flex justify-end w-full ">
-                {featured_articles.map(({title, date}=articles, idx:number) => (
+                {featured_articles.map(({title, date, slug, format}=articles, idx:number) => (
                   <div key={idx} className="bg-primary text-primary-foreground p-6 max-w-[320px] flex flex-col items-start justify-between">
                     <div>
-                      <div className="pb-2 flex justify-between font-secondary-medium text-sm">
+                      <div className="pb-2 flex gap-2 items-center font-secondary-medium text-sm">
+                        <ArticleFormat format={format.title} />
                         <p><Date dateString={date}/></p>
                       </div>
                       <p className="text-md font-medium font-primary-medium leading-snug text-balance">{title}</p>
                     </div>
-                    <Button variant="link" className="text-primary-foreground px-0 flex gap-4">
-                      Read now <ChevronRight className="h-4 w-4" />
+                    <Button variant="link" asChild className="text-primary-foreground px-0 flex gap-4">
+                      <Link href={`/${params.slug}/${slug}`}>
+                        Read now <ChevronRight className="h-4 w-4" />
+                      </Link>
                     </Button>
                   </div>
                 ))}
@@ -121,7 +125,7 @@ export default async function Network({
           <div className="news_grid gap-x-10 gap-y-4 pb-16">
             {topArticles.map(({title, date, currentSlug, cover_image, categories, format}=articles, idx:number) => (
               <div key={idx} className={`div${idx+1}`}>
-                <Link href={`/${params.slug}/${currentSlug}`} className="flex gap-4" >
+                <Link href={`/${params.slug}/${currentSlug}`} className="flex gap-4 group" >
                   {(idx+1 != 2 && idx+1 != 3 && idx+1 != 4 && idx+1 != 5 && idx+1 != 7 && idx+1 != 8 && idx+1 != 9 && idx+1 != 17 && idx+1 != 18) &&
                     <Image
                       src={cover_image.asset.url + '?w=1200'}
@@ -138,7 +142,7 @@ export default async function Network({
                           <p key={idx} className="text-primary" >{category.title}</p>
                         ))}
                     </div>
-                    <h3 className="text-lg font-medium font-primary-medium leading-snug">{title}</h3>
+                    <h3 className="text-lg font-medium font-primary-medium leading-snug group-hover:underline">{title}</h3>
                     <div className="pt-2 flex gap-2 font-secondary-medium text-sm">
                       <p><Date dateString={date}/></p>
                     </div>
@@ -146,12 +150,12 @@ export default async function Network({
                 </Link>
               </div>
             ))}
-            <div className="div10 py-16">
-              <p>Advertisement in here</p>
+            <div className="div10 py-24 border flex justify-center border-dotted rounded-md my-6 advert">
+              <p>Advertisement Area</p>
             </div>
             {bottomArticles.map(({title, date, currentSlug, cover_image, categories, format}=articles, idx:number) => (
               <div key={idx} className={`div${idx+11}`}>
-                <Link href={`/${params.slug}/${currentSlug}`} className="flex gap-4 h-full" >
+                <Link href={`/${params.slug}/${currentSlug}`} className="flex gap-4 h-full group" >
                 {(idx+11 != 18 && idx+11 != 19 && idx+11 != 20 ) &&
                   <div className="relative image-container">
                     <Image
@@ -171,7 +175,7 @@ export default async function Network({
                           <p key={idx} className="text-primary" >{category.title}</p>
                         ))}
                     </div>
-                    <h3 className="text-lg font-medium font-primary-medium leading-snug">{title}</h3>
+                    <h3 className="text-lg font-medium font-primary-medium leading-snug group-hover:underline">{title}</h3>
                     <div className="pt-2 flex justify-between font-secondary-medium text-sm">
                       <p><Date dateString={date}/></p>
                     </div>

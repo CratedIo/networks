@@ -16,8 +16,11 @@ const networkFields = groq`
   },
   featured_articles[]->{
     title,
-    "Slug": slug.current,
+    "slug": slug.current,
     date,
+    format->{
+    title
+    },
     categories[]->{
     title
     },
