@@ -195,38 +195,40 @@ export default async function Article({ params }: Props ) {
             {!session ?
             <>
               <Link href={'/signin'} >
-                <SmilePlus />
+                <SmilePlus strokeWidth={1} />
               </Link>
               <Link href={'/signin'} >
-                <MessageCircle />
+                <MessageCircle strokeWidth={1} />
               </Link>
               <Link href={'/signin'} >
-                <BookmarkPlus />
+                <BookmarkPlus strokeWidth={1} />
               </Link>
               <Link href={'/signin'} >
-                <Share />
+                <Share strokeWidth={1} />
               </Link>
             </>
             :
             <>
               <Link href={'/'} >
-                <SmilePlus />
+                <SmilePlus strokeWidth={1} />
               </Link>
               <Link href={'/'} >
-                <MessageCircle />
+                <MessageCircle strokeWidth={1} />
               </Link>
               <Link href={'/'} >
-                <BookmarkPlus />
+                <BookmarkPlus strokeWidth={1} />
               </Link>
               <Link href={'/'} >
-                <Share />
+                <Share strokeWidth={1} />
               </Link>
             </>
             }
 
           </div>
 
-          <Content data={data} />
+          <div className="main-contant">
+            <Content data={data} />
+          </div>
 
           <div className="pt-16 pb-8 border-b">
             <p>Written by</p>

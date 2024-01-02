@@ -40,7 +40,6 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <AuthWrapper>
-              <Header />
               {children}
             </AuthWrapper>
         </ThemeProvider>

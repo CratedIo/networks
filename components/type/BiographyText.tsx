@@ -1,6 +1,17 @@
+import Link from "next/link"
+
 export const BiographyText = {
       block: {
-        normal: ({children}:any) => <p className="text-sm pb-4">{children}</p>,
-        blockquote: ({children}:any) => <blockquote className="tracking-tight leading-tight text-5xl pb-4 block-text">{children}</blockquote>,
+        normal: ({children}:any) => <p className="leading-loose text-sm pb-4 font-secondary-medium">{children}</p>,
       },
+      marks: {
+        link: ({children, value}:any) => {
+          const rel = !value.href.startsWith('/') ? 'noreferrer noopener' : undefined
+          return (
+            <Link href={value.href} rel={rel} className="text-primary">
+              {children}
+            </Link>
+          )
+        },
+      }
   }

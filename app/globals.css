@@ -165,16 +165,26 @@
       max-width: 50%;
     }
 
-    .div11 img, .div12 img, .div15 img, .div16 img, .div17 img {
-      height: 200px;
+    .div11 .image-container, .div12 .image-container, .div15 .image-container, .div16 .image-container, .div17 .image-container {
+      height: 100%;
       max-width: 50%;
+    }
+    .div21 .image-container {
+      height: 100%;
+      max-width: 60%;
+    }
+    .div11 img, .div12 img, .div15 img, .div16 img, .div17 img, .div21 img  {
+      height: 100%;
     }
 
     .div13 img, .div14 img {
       height: 350px;
     }
     
-    .div21 img {
-      height: 352px;
-      max-width: 60%;
+
+    .main-contant a {
+      @apply underline
+    }
+    .main-contant li {
+      @apply pb-6
     }

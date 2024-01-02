@@ -7,11 +7,20 @@ const networkFields = groq`
   cover_article{
     title,
     description,
+    url,
     image{asset->{url}},
     article->{
       title,
       "slug": slug.current,
     }
+  },
+  featured_articles[]->{
+    title,
+    "Slug": slug.current,
+    date,
+    categories[]->{
+    title
+    },
   }
 `
 const articlesFields = groq`
