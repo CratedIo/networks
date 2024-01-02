@@ -3,7 +3,6 @@ import { client } from "../../utils/sanity/sanity.client";
 import { networkQuery } from "../../utils/sanity/sanity.queries";
 import Image from "next/image";
 import Link from "next/link";
-import { NotFound } from "@/components/error/NotFound";
 import { PaginationControls } from "@/components/pagination/PaginationControls";
 import Date from "@/components/utils/date";
 import { Badge } from "@/components/ui/badge";
@@ -13,27 +12,48 @@ import { Button } from "@/components/ui/button";
 import TestScroll from "@/components/Test";
 import ArticleFormat from "@/components/article/ArticleFormat";
 import ArticleImageIcon from "@/components/article/ArticleImageIcon";
+import { notFound } from "next/navigation";
+import { NetworkPageProps } from "@/utils/sanity/sanity.interface";
+import { Metadata } from "next";
+import { toPlainText } from "@portabletext/react";
 
-export const revalidate = 30; // revalidate at most 30 seconds
+export const revalidate = 0; // revalidate at most 30 seconds
 
-let start = 0
-let end = 3
+let start:number;
+let end:number;
 
-async function getData(slug: string) {
+async function getNetwork(params: { slug: string }) {
+  const slug = params.slug
   const data  = await client.fetch(networkQuery, {slug, start, end});
-  if(!data){
-    return false
+  if (!data.network) {
+    notFound;
   }
-  return data ;
+  return data;
 }
 
-export default async function Network({
+export async function generateMetadata({
+  params,
+}: NetworkPageProps ): Promise<Metadata> {
+  const data = await getNetwork(params);
+
+  if (!data) {
+    return {};
+  }
+  const { network } = data
+
+  const truncateDescription = toPlainText(network.overview).slice(0, 100) + ("..." as string);
+
+  return {
+    title: network.title,
+    description: truncateDescription,
+  };
+}
+
+
+export default async function NetworkPage({
   params,
   searchParams,
-}: {
-  params: { slug: string };
-  searchParams: { page: string }
-}) {
+}: NetworkPageProps ) {
   
   const current_page = searchParams.page != undefined ? Number(searchParams.page) : 1;
   const per_page = 20
@@ -41,25 +61,26 @@ export default async function Network({
   start = (Number(current_page) -1) *Number(per_page)
   end = start + Number(per_page)
 
-  const data = await getData(params.slug);
-  if(!data) {
-    return <NotFound />
+  const data = await getNetwork(params);
+
+  if (!data.network) {
+    notFound();
   }
-  const {network, articles, total} = data
+
+  const { network, articles, total } = data
   const { cover_article, featured_articles } = network
 
-  const artwork = true;
-  if(artwork) {
+  const advert:boolean = true;
+  if(advert) {
     var topArticles = articles.slice(0,9);
     var bottomArticles = articles.slice(9);
   }
+
   let hero:boolean = true
   if(searchParams.page != undefined && searchParams.page != "1") {
     hero = false
   }
-
-  console.log(featured_articles)
-
+  
   return (
     <>
       <Header title={ network.title } slug={ network.currentSlug } />
@@ -98,7 +119,7 @@ export default async function Network({
                   </Button>
                 </div>
               </div>
-              <div className="flex justify-end w-full ">
+              <div className="flex justify-end w-full pl-4">
                 {featured_articles.map(({title, date, slug, format}=articles, idx:number) => (
                   <div key={idx} className="bg-primary text-primary-foreground p-6 max-w-[320px] flex flex-col items-start justify-between">
                     <div>
@@ -120,7 +141,7 @@ export default async function Network({
         </div>
       </div>
       }
-        <div id="test" className="container mx-auto px-5 py-32">
+        <div className="container mx-auto px-5 py-32">
           
           <div className="news_grid gap-x-10 gap-y-4 pb-16">
             {topArticles.map(({title, date, currentSlug, cover_image, categories, format}=articles, idx:number) => (
@@ -132,6 +153,7 @@ export default async function Network({
                       width={1200}
                       height={800}
                       alt={`Article: ${title}`}
+                      priority
                       className={'shadow-small hover:shadow-medium transition-shadow duration-200 object-cover'}
                     />
                   }
@@ -185,23 +207,14 @@ export default async function Network({
             ))}
           </div>
 
-            <PaginationControls current_page={current_page} per_page={per_page} total={total} />
+            <PaginationControls 
+            current_page={current_page} 
+            per_page={per_page} 
+            total={total} 
+            />
 
         </div>
       </main>
     </>
   );
 }
-
-/*
-<AspectRatio ratio={11 / 4}>
-                  <Image
-                    fill={true}
-                    sizes="(max-width: 1200px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    alt={`Cover Image for ${title}`}
-                    src={cover_image.asset.url + '?w=1200'}
-                    priority
-                    className={'shadow-small hover:shadow-medium transition-shadow duration-200 object-cover'}
-                  />
-                </AspectRatio>
-                */

@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Button } from "../ui/button"
 
-export function NotFound() {
+const SharedNotFound = () => {
 
   return (
     <div className="grid h-screen place-content-center px-4">
@@ -21,3 +21,4 @@ export function NotFound() {
     </div>
   )
 }
+export default SharedNotFound;

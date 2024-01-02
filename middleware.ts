@@ -2,6 +2,18 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { createClient } from '@/utils/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
+
+  // Store current request url in a custom header, which you can read later
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-url', request.url);
+
+  return NextResponse.next({
+    request: {
+      // Apply new request headers
+      headers: requestHeaders,
+    }
+  });
+
   // Create a Supabase client configured to use cookies
   const { supabase, response } = createClient(request)
   // Refresh session if expired - required for Server Components

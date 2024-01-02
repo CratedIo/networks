@@ -135,6 +135,11 @@
     .div20 { grid-area: 14 / 1 / 15 / 2; }
     .div21 { grid-area: 12 / 2 / 15 / 4; }
 
+    .news_grid > div:not(.div10) a,
+    .news_grid img {
+      @apply h-full;
+    }
+
     .div1 a, .div13 a, .div14 a {
       @apply flex-col
     }
@@ -159,15 +164,12 @@
     .news_grid .div6, .news_grid .div9, .news_grid .div15, .news_grid .div16, .news_grid .div17 {
       @apply pb-10
     }
-
     .div1 img {
       height: 400px;
     }
     .div6 img {
-      height: 352px;
       max-width: 50%;
     }
-
     .div11 .image-container, .div12 .image-container, .div15 .image-container, .div16 .image-container, .div17 .image-container {
       height: 100%;
       max-width: 50%;
@@ -179,19 +181,15 @@
     .div11 img, .div12 img, .div15 img, .div16 img, .div17 img, .div21 img  {
       height: 100%;
     }
-
     .div13 img, .div14 img {
       height: 350px;
     }
-    
-
     .main-contant a {
       @apply underline
     }
     .main-contant li {
       @apply pb-6
     }
-
 
 
     .advert {

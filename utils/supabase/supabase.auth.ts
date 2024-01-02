@@ -17,11 +17,8 @@ export async function AuthInWithEmail( data:{
 }) {
     const redirectPath = data.redirect ? '?next=' + data.redirect : '';
 
-    console.log(data)
-
     const cookieStore = cookies()
     const supabase = createClientServer(cookieStore)
-
     
     const result = await supabase.auth.signInWithOtp({
         email:data.email,
@@ -32,13 +29,8 @@ export async function AuthInWithEmail( data:{
         },
       })
 
-      console.log(result)
-
     if(result.error) {
         const send = await SendSignUpEmail( data.email, redirectPath )
-    }
-    if(!result.error) {
-        console.log('no error')
     }
     return JSON.stringify(result)
     
@@ -64,7 +56,6 @@ export async function AuthInWithEmailResend( data:{
       return JSON.stringify(result)
     } catch (error) {
         //const send = await SendSignUpEmail()
-        return console.log(error);
     }
     
 }

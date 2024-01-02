@@ -47,3 +47,14 @@ export interface articleFull {
   meta_image: [];
   additional_slugs: [];
 }
+
+export interface ArticlePageProps {
+  params: {
+    id: string;
+  };
+}
+
+export interface NetworkPageProps {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined }
+}
