@@ -86,7 +86,7 @@
    }
 }
 
-.news_grid {
+.article_grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(14, auto);
@@ -135,18 +135,14 @@
     .div20 { grid-area: 14 / 1 / 15 / 2; }
     .div21 { grid-area: 12 / 2 / 15 / 4; }
 
-    .news_grid > div:not(.div10) a,
-    .news_grid img {
-      @apply h-full;
-    }
 
-    .div1 a, .div13 a, .div14 a {
+    .div1 , .div13 , .div14  {
       @apply flex-col
     }
-    .div1 a {
+    .div1 {
       @apply flex-col-reverse
     }
-    .div6 a {
+    .div6 {
       @apply flex-row-reverse
     }
     .div1 h3 {
@@ -158,28 +154,17 @@
     .div13 h3, .div14 h3 {
       @apply text-2xl leading-snug;
     }
-    .news_grid > div:not(.div10) {
+    .article_grid > div:not(.div10 , .div9, .div6) {
       @apply border-b pb-4;
-    }
-    .news_grid .div6, .news_grid .div9, .news_grid .div15, .news_grid .div16, .news_grid .div17 {
-      @apply pb-10
     }
     .div1 img {
       height: 400px;
     }
-    .div6 img {
-      max-width: 50%;
-    }
     .div11 .image-container, .div12 .image-container, .div15 .image-container, .div16 .image-container, .div17 .image-container {
-      height: 100%;
       max-width: 50%;
     }
     .div21 .image-container {
-      height: 100%;
       max-width: 60%;
-    }
-    .div11 img, .div12 img, .div15 img, .div16 img, .div17 img, .div21 img  {
-      height: 100%;
     }
     .div13 img, .div14 img {
       height: 350px;
@@ -188,9 +173,12 @@
       @apply underline
     }
     .main-contant li {
-      @apply pb-6
+      @apply pb-2
     }
 
+    .image-container a {
+      @apply h-full
+    }
 
     .advert {
       background-color: transparent ;
@@ -198,4 +186,11 @@
         repeating-linear-gradient(45deg, rgba(34, 34, 34, 0),rgba(34, 34, 34, 0) 5px, rgba(34, 34, 34, 0.3) 5px, rgba(34, 34, 34, 0.3) 6px),
         repeating-linear-gradient(-45deg, rgba(34, 34, 34, 0), rgba(34, 34, 34, 0) 5px, rgba(34, 34, 34, 0.3) 5px, rgba(34, 34, 34, 0.3) 6px);
       background-size: 8px 8px, 8px 8px;
+    }
+
+    .set-light {
+      @apply text-white
+    }
+    .set-dark {
+      @apply text-white
     }

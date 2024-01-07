@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { sanityImage } from "../utils/sanityImage"
 
 export function AvatarComponent({
     image,
@@ -23,7 +24,7 @@ export function AvatarComponent({
   
   return (
     <Avatar>
-        <AvatarImage src={image ? `${image}?w=200` : ''} />
+        <AvatarImage src={image ? `${sanityImage(image)}?w=200` : ''} />
         <AvatarFallback>{getInitials(name)}</AvatarFallback>
     </Avatar>
   )

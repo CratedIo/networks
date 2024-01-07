@@ -27,6 +27,7 @@ const VideoComponent = ({value, isInline}:any) => {
 
 const ImageComponent = ({value, isInline}:any) => {
   const { link, asset } = value
+  
   const ArticleImage = () => {
       return (
           <Image 

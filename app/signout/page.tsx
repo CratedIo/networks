@@ -2,6 +2,7 @@ import Header from '@/components/Header';
 import { AuthSignOutForm } from '@/components/auth/AuthSignOutForm';
 
 export default async function SignOut({
+
   searchParams,
 }: {
   searchParams: { next: string }
@@ -11,7 +12,7 @@ export default async function SignOut({
 
   return (
     <>
-      <Header title={ '' } slug={ '/' } />
+      <Header title={ 'Change' } slug={ '/' } color={null} />
       <main>
         <div className="container mx-auto px-5">
             <div className="flex justify-center items-center w-full min-h-screen">

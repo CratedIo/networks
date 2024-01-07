@@ -1,21 +1,21 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { client } from "../../utils/sanity/sanity.client";
-import { networkQuery } from "../../utils/sanity/sanity.queries";
 import Image from "next/image";
 import Link from "next/link";
 import { PaginationControls } from "@/components/pagination/PaginationControls";
 import Date from "@/components/utils/date";
-import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
 import { ChevronRight, Eye, ListMinus, Mail, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import TestScroll from "@/components/Test";
 import ArticleFormat from "@/components/article/ArticleFormat";
 import ArticleImageIcon from "@/components/article/ArticleImageIcon";
 import { notFound } from "next/navigation";
-import { NetworkPageProps } from "@/utils/sanity/sanity.interface";
+import { NetworkPageProps } from "@/utils/supabase/supabase.interface";
 import { Metadata } from "next";
 import { toPlainText } from "@portabletext/react";
+import { GetAllArticles, GetNetwork } from "@/utils/supabase/supabase.queries";
+import { sanityImage } from "@/components/utils/sanityImage";
+import FeaturedArticles from "@/components/featured/FeaturedArticles";
+import ArticleBlock from "@/components/article/ArticleBlock";
 
 export const revalidate = 0; // revalidate at most 30 seconds
 
@@ -24,11 +24,14 @@ let end:number;
 
 async function getNetwork(params: { slug: string }) {
   const slug = params.slug
-  const data  = await client.fetch(networkQuery, {slug, start, end});
-  if (!data.network) {
+  //const data  = await client.fetch(networkQuery, {slug, start, end});
+  
+  const network = await GetNetwork(slug);
+  const articleData = await GetAllArticles(slug, start, end);
+  if (!network) {
     notFound;
   }
-  return data;
+  return {network, articleData};
 }
 
 export async function generateMetadata({
@@ -41,176 +44,113 @@ export async function generateMetadata({
   }
   const { network } = data
 
-  const truncateDescription = toPlainText(network.overview).slice(0, 100) + ("..." as string);
+  const truncateDescription = toPlainText(network?.overview).slice(0, 100) + ("..." as string);
 
   return {
-    title: network.title,
+    title: network?.title,
     description: truncateDescription,
   };
 }
-
 
 export default async function NetworkPage({
   params,
   searchParams,
 }: NetworkPageProps ) {
   
+  const route = '/' + params.slug
+  
   const current_page = searchParams.page != undefined ? Number(searchParams.page) : 1;
   const per_page = 20
 
   start = (Number(current_page) -1) *Number(per_page)
-  end = start + Number(per_page)
+  end = start + Number(per_page) -1
 
   const data = await getNetwork(params);
 
-  if (!data.network) {
+  if (!data.network || !data.articleData.data || !data.articleData.count) {
     notFound();
   }
+  const { network, articleData } = data
+  const articles = data.articleData.data
+  const count = data.articleData.count
 
-  const { network, articles, total } = data
-  const { cover_article, featured_articles } = network
-
+  const featured_articles = [network.featured_0, network.featured_1, network.featured_2, network.featured_3, network.featured_4].filter(function (el) {
+    return el != null;
+  });
+  
   const advert:boolean = true;
-  if(advert) {
-    var topArticles = articles.slice(0,9);
-    var bottomArticles = articles.slice(9);
-  }
+  const topArticles = articles.slice(0,9);
+  const bottomArticles = articles.slice(9);
 
   let hero:boolean = true
   if(searchParams.page != undefined && searchParams.page != "1") {
     hero = false
   }
+
   
   return (
     <>
-      <Header title={ network.title } slug={ network.currentSlug } />
+      <Header title={ network.title } slug={ network.slug } color={network.cover_article.color} />
       <main>
         {hero &&
-        <div className="relative">
-          <AspectRatio ratio={16 / 8}>
-            <Image
-              fill={true}
-              sizes="(max-width: 1920px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              alt={`Cover Image for ${cover_article.title}`}
-              src={cover_article.image.asset.url + '?w=1920'}
-              priority
-              className={'object-cover'}
-            />
-          </AspectRatio>
-          <div className="absolute top-0 left-0 w-full h-full">
-            <div className="flex flex-col gap-12 justify-end items-end w-full h-full">
-              
-              <div className="w-full px-12 flex justify-between items-end">
-                <div className="text-left">
-                  <h1 className="text-7xl font-medium font-primary-medium leading-tight tracking-wide max-w-lg text-balance">{ network.title }</h1>
-                  <p className=" max-w-lg">{ network.overview }</p>
-                </div>
-                <div className="text-right max-w-2xl">
-                  <div className="flex gap-2 justify-end items-end pb-4">
-                    <Sparkles strokeWidth={1} />
-                    <p>Spotlight article</p>
+          <div className="relative">
+            <div className="min-h-screen">
+              <Image
+                fill={true}
+                sizes="(max-width: 1920px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                alt={`Cover Image for ${network.cover_article.title}`}
+                src={sanityImage(network.cover_article.image) + '?w=1920'}
+                priority
+                className={'object-cover'}
+              />
+            </div>
+            <div className="absolute top-0 left-0 w-full h-full">
+              <div className="flex flex-col gap-12 justify-end items-end w-full h-full">
+                
+                <div className={`w-full px-12 flex justify-between items-end`}>
+                  <div className={`text-left ${network.cover_article.color}`}>
+                    <h1 className="text-7xl font-medium font-primary-medium leading-tight tracking-wide max-w-lg text-balance">{ network.title }</h1>
+                    <p className=" max-w-lg">{ network.overview }</p>
                   </div>
-                  <h2 className="text-3xl font-medium font-primary-medium leading-snug pb-4 text-balance">{cover_article.title}</h2>
-                  <p className="text-sm font-medium font-secondary-medium leading-snug pb-4 text-balance">{cover_article.description}</p>
-                  <Button variant="outline" asChild>
-                    <Link href={cover_article.url} className="flex gap-2"> 
-                      <Eye strokeWidth={1} /> Read now
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-              <div className="flex justify-end w-full pl-4">
-                {featured_articles.map(({title, date, slug, format}=articles, idx:number) => (
-                  <div key={idx} className="bg-primary text-primary-foreground p-6 max-w-[320px] flex flex-col items-start justify-between">
-                    <div>
-                      <div className="pb-2 flex gap-2 items-center font-secondary-medium text-sm">
-                        <ArticleFormat format={format.title} />
-                        <p><Date dateString={date}/></p>
+                  <div className="text-right max-w-2xl">
+                    <div className={`${network.cover_article.color}`}>
+                      <div className="flex gap-2 justify-end items-end pb-4">
+                        <Sparkles strokeWidth={1} />
+                        <p>Spotlight article</p>
                       </div>
-                      <p className="text-md font-medium font-primary-medium leading-snug text-balance">{title}</p>
+                      <h2 className="text-3xl font-medium font-primary-medium leading-snug pb-4 text-balance">{network.cover_article.title}</h2>
+                      <p className="text-sm font-medium font-secondary-medium leading-snug pb-4 text-balance">{network.cover_article.description}</p>
                     </div>
-                    <Button variant="link" asChild className="text-primary-foreground px-0 flex gap-4">
-                      <Link href={`/${params.slug}/${slug}`}>
-                        Read now <ChevronRight className="h-4 w-4" />
+                    <Button variant="outline" asChild>
+                      <Link href={network.cover_article.url} className="flex gap-2"> 
+                        <Eye strokeWidth={1} /> Read now
                       </Link>
                     </Button>
                   </div>
-                ))}
+                </div>
+                <FeaturedArticles featured={featured_articles} params={params} />
               </div>
-            </div>
-        </div>
-      </div>
-      }
+          </div>
+          </div>
+        }
         <div className="container mx-auto px-5 py-32">
           
-          <div className="news_grid gap-x-10 gap-y-4 pb-16">
-            {topArticles.map(({title, date, currentSlug, cover_image, categories, format}=articles, idx:number) => (
-              <div key={idx} className={`div${idx+1}`}>
-                <Link href={`/${params.slug}/${currentSlug}`} className="flex gap-4 group" >
-                  {(idx+1 != 2 && idx+1 != 3 && idx+1 != 4 && idx+1 != 5 && idx+1 != 7 && idx+1 != 8 && idx+1 != 9 && idx+1 != 17 && idx+1 != 18) &&
-                    <Image
-                      src={cover_image.asset.url + '?w=1200'}
-                      width={1200}
-                      height={800}
-                      alt={`Article: ${title}`}
-                      priority
-                      className={'shadow-small hover:shadow-medium transition-shadow duration-200 object-cover'}
-                    />
-                  }
-                  <div>
-                    <div className="font-secondary-medium text-sm pb-2 flex gap-2 items-center">
-                        <ArticleFormat format={format.title} />
-                        {categories.map((category: any, idx: number) => (
-                          <p key={idx} className="text-primary" >{category.title}</p>
-                        ))}
-                    </div>
-                    <h3 className="text-lg font-medium font-primary-medium leading-snug group-hover:underline">{title}</h3>
-                    <div className="pt-2 flex gap-2 font-secondary-medium text-sm">
-                      <p><Date dateString={date}/></p>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
-            <div className="div10 py-24 border flex justify-center border-dotted rounded-md my-6 advert">
+          <div className="article_grid gap-x-10 gap-y-4 pb-16">
+            <ArticleBlock network={'climate'} articles={topArticles} start={1} image_skip={[2,3,4,5,7,8,9]} priority_image={true} />
+            {advert &&
+              <div className="div10 py-24 border flex justify-center border-dotted rounded-md my-6 advert">
               <p>Advertisement Area</p>
             </div>
-            {bottomArticles.map(({title, date, currentSlug, cover_image, categories, format}=articles, idx:number) => (
-              <div key={idx} className={`div${idx+11}`}>
-                <Link href={`/${params.slug}/${currentSlug}`} className="flex gap-4 h-full group" >
-                {(idx+11 != 18 && idx+11 != 19 && idx+11 != 20 ) &&
-                  <div className="relative image-container">
-                    <Image
-                      src={cover_image.asset.url + '?w=1200'}
-                      width={1200}
-                      height={800}
-                      alt={`Article: ${title}`}
-                      className={'shadow-small hover:shadow-medium transition-shadow duration-200 object-cover'}
-                    />
-                    <ArticleImageIcon format={format.title} />
-                  </div>
-                  }
-                  <div>
-                    <div className="font-secondary-medium text-sm pb-2 flex gap-2 items-center">
-                        <ArticleFormat format={format.title} />
-                        {categories.map((category: any, idx: number) => (
-                          <p key={idx} className="text-primary" >{category.title}</p>
-                        ))}
-                    </div>
-                    <h3 className="text-lg font-medium font-primary-medium leading-snug group-hover:underline">{title}</h3>
-                    <div className="pt-2 flex justify-between font-secondary-medium text-sm">
-                      <p><Date dateString={date}/></p>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
+            }
+            <ArticleBlock network={'climate'} articles={bottomArticles} start={11} image_skip={[18,19,20]} priority_image={false} />
+
           </div>
 
             <PaginationControls 
             current_page={current_page} 
             per_page={per_page} 
-            total={total} 
+            total={count}
+            route={route}
             />
 
         </div>

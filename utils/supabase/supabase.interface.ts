@@ -49,12 +49,21 @@ export interface articleFull {
 }
 
 export interface ArticlePageProps {
-  params: {
-    id: string;
-  };
+  params: { slug: string, id:string };
 }
 
 export interface NetworkPageProps {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined }
+}
+export interface TagPageProps {
+  params: { slug: string, id:string };
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export interface PaginationProps {
+  current_page: number;
+  per_page: number;
+  total: number;
+  route: string
 }

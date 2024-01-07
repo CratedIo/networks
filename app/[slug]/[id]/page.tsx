@@ -1,6 +1,6 @@
 import { articleQuery } from "@/utils/sanity/sanity.queries";
 import { client } from "../../../utils/sanity/sanity.client";
-import { ArticlePageProps, articleFull } from "../../../utils/sanity/sanity.interface";
+import { ArticlePageProps, articleFull } from "../../../utils/supabase/supabase.interface";
 import {
   getUserPremiumAccess,
   getUserSession,
@@ -17,28 +17,41 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
-import { BookmarkPlus, CalendarDays, Heart, MessageCircle, Share, SmilePlus, ThumbsUp } from "lucide-react";
+import { BookmarkPlus, CalendarDays, Heart, Linkedin, MessageCircle, Share, SmilePlus, ThumbsUp } from "lucide-react";
 import Date from "@/components/utils/date";
 import { AvatarComponent } from "@/components/users/AvatarComponent";
 import { Metadata, ResolvedMetadata } from "next";
 import { BiographyText } from "@/components/type/BiographyText";
 import Link from "next/link";
 import Header from "@/components/Header";
-import { notFound } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { getOgImageUrl, getUrl } from "@/lib/utils";
 import { headers } from "next/headers";
+import { GetArticle, GetRelatedArticles } from "@/utils/supabase/supabase.queries";
+import { sanityImage } from "@/components/utils/sanityImage";
+import ArticleFormat from "@/components/article/ArticleFormat";
+import FormatHoverCard from "@/components/article/FormatHoverCard";
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
 async function getArticle(params: { id: string }) {
   const id = params.id
-  const article = await client.fetch(articleQuery, { id });
+  const article = await GetArticle(id);
+
   if (!article) {
     notFound;
   }
   return article;
 }
 
+async function getRelatedArticle(slug:string, id: string, filter:string) {
+  const relatedArticles = await GetRelatedArticles(slug, id, filter);
+
+  if (!relatedArticles) {
+    notFound;
+  }
+  return relatedArticles;
+}
 
 export async function generateMetadata({
   params,
@@ -60,23 +73,30 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ params }: ArticlePageProps ) {
 
-  const article:articleFull = await getArticle(params);
+  const article:any = await getArticle(params);
   if (!article) {
     notFound();
   }
   const {
     title,
     cover_image,
-    date,
+    publish_date,
     authors,
-    categories,
+    filters,
     format,
-    network,
+    networks,
     additional_slugs,
     premium,
     gated
   } = article;
 
+  
+  let networkDetails = networks.find((o:any) => o.slug === params.slug);
+
+  const relatedArticles:any = await getRelatedArticle(params.slug, params.id, filters[0].slug )
+  if (!relatedArticles) {
+    notFound();
+  }
   const {
     data: { session },
   } = await getUserSession();
@@ -98,14 +118,23 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
       if (session) {
         return <PortableText value={data.content} components={RichText} />;
       }
-      return <AuthButton label={"Sign In"} url={"/signin"} />;
+      return (
+        <div>
+          <h2 className="text-3xl font-medium leading-tight tracking-wide max-w-lg text-balance">
+            Sign up to discover human stories that deepen your understanding of the world.
+          </h2>
+          <AuthButton label={"Sign Up"} url={"/signup"} />
+          <div className="pt-4 text-sm font-medium">
+          <p>Already have an account?<AuthButton label={'Sign In'} url={'/signin'} pathParam={'/'} variant={'link'} /></p>
+        </div>
+        </div>
+      );
     }
 
     if (premium) {
       if (session && userPremiumAccess?.premium_access) {
         return (
           <div>
-            <p>You have the correct access</p>
             <PortableText value={data.content} components={RichText} />
           </div>
         );
@@ -114,7 +143,7 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
       }
       return (
         <div>
-          <p>This required premium access</p>
+          <p>This requires premium access</p>
           <AuthButton label={"Sign In"} url={"/signin"} />
         </div>
       );
@@ -130,20 +159,17 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
     const time = Math.ceil(words / wpm);
     return <p className="text-sm">{time} min read</p>
   }
-  const headersList = headers();
-  // read the custom x-url header
-  const header_url = headersList.get('x-url') || "";
-  
-  let path:any = network.find((o:any) => o.slug.current === header_url.split('/')[3]);
+
+  console.log(params)
 
   return (
     <>
-      <Header title={ path.title } slug={ path.slug.current } />
+      <Header title={ networkDetails.title } slug={ networkDetails.slug } color={null} />
       <main>
         <div className="container mx-auto px-5 pt-32">
           <h2 className="text-5xl pb-8 font-primary-medium max-w-4xl">{title}</h2>
           <p className="font-normal text-sm">
-            <Date dateString={date} />
+            <Date dateString={publish_date} />
           </p>
           <div className="flex gap-8 items-center justify-between text-md">
             <div className="flex items-center gap-2">
@@ -157,19 +183,18 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
                       <HoverCardContent className="w-80">
                         <div className="flex justify-between space-x-4">
                           <AvatarComponent
-                            image={author.profile.asset.url}
+                            image={author.profile_image}
                             name={author.name}
                           />
                           <div className="space-y-1">
-                            <h4 className="text-sm font-semibold">@nextjs</h4>
+                            <h4 className="text-sm font-semibold">{author.name}</h4>
                             <p className="text-sm">
-                              The React Framework – created and maintained by @vercel.
+                              {toPlainText(author.biography).slice(0, 100) + ("..." as string)}
                             </p>
                             <div className="flex items-center pt-2">
-                              <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
-                              <span className="text-xs text-muted-foreground">
-                                Joined December 2021
-                              </span>
+                              <Link href={author.linkedin} target="_blank" >
+                                <Linkedin className="mr-2 h-4 w-4 opacity-70" />{" "}
+                              </Link>
                             </div>
                           </div>
                         </div>
@@ -179,8 +204,8 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
                 ))}
             </div>
             <div>
-              {categories.map((category: any, index: number) => (
-                <p key={index}>{category.title}</p>
+              {filters.map((filter: any, idx: number) => (
+                <FormatHoverCard key={idx} format={filter} />
               ))}
             </div>
           </div>
@@ -190,7 +215,7 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
               <Image
                 fill
                 alt={`Cover Image for ${title}`}
-                src={cover_image.asset.url}
+                src={sanityImage(cover_image) + '?w=1920'}
                 priority
                 className={
                   "shadow-small hover:shadow-medium transition-shadow duration-200 object-cover"
@@ -200,8 +225,7 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
       
           <div className="pb-32 pt-16 mx-auto max-w-3xl">
             
-            <div className="flex justify-end gap-4 pb-16 items-center">
-                <>{readingTime(article.content)}</>
+            <div className="flex justify-start gap-4 pb-16 items-center">
                 <Link href={'/'} >
                   <SmilePlus strokeWidth={1} />
                 </Link>
@@ -214,6 +238,7 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
                 <Link href={'/'} >
                   <Share strokeWidth={1} />
                 </Link>
+                <>{readingTime(article.content)}</>
             </div>
       
             <div className="main-contant">
@@ -227,7 +252,7 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
                   <div key={idx}>
                     <div className="flex gap-4 items-center pb-4">
                       <AvatarComponent
-                        image={author.profile.asset.url}
+                        image={author.profile_image}
                         name={author.name}
                       />
                       <p className="text-2xl">{author.name}</p>
@@ -238,13 +263,65 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
               </div>
             </div>
       
-            {authors.length <= 1 &&
-              <div className="pt-8 pb-8 border-b">
-                {authors.map((author: any, idx: number) => (
-                  <p key={idx} className="text-2xl">More from {author.name}</p>
+              <div>
+                {authors.map((author: any, idx: number) => author.articles.length > 0 && (
+                  <div key={idx} className="pt-8 pb-8 border-b" >
+                    <p className="text-2xl pb-16">More from {author.name}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                      {author.articles.map(({title, slug, cover_image, format, filters, publish_date}:any, idx:any) => (
+                        <div key={idx}>
+                          <Link href={slug}>
+                            <AspectRatio ratio={16 / 7}>
+                              <Image
+                                fill
+                                alt={`${title}`}
+                                src={sanityImage(cover_image) + '?w=800'}
+                                priority
+                                className={
+                                  "shadow-small hover:shadow-medium transition-shadow duration-200 object-cover"
+                                }
+                              />
+                            </AspectRatio>
+                          </Link>
+                          <div className="font-secondary-medium text-sm py-2 flex gap-2 items-center">
+                              <ArticleFormat format={format.name} />
+                              {filters.map((filter: any, idx: number) => (
+                                <Link key={idx} href={`/${params.slug}/tag/${filter.slug}`} className="text-primary hover:underline" >{filter.name}</Link>
+                              ))}
+                          </div>
+                          <Link href={slug}>
+                            <h4 className="text-xl font-medium font-primary-medium leading-snug text-balance hover:underline">{title}</h4>
+                            <p className="pt-2 flex gap-2 font-secondary-medium text-sm"><Date dateString={publish_date}/></p>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
-            }
+            <>
+              {relatedArticles.length > 0 &&
+                <div className="pt-8 pb-8 border-b">
+                    <p className="text-2xl pb-16">Related content</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                      {relatedArticles.map(({title, slug, cover_image, format, filters, publish_date}:any, idx:any) => (
+                        <div key={idx}>
+                          <div className="font-secondary-medium text-sm py-2 flex gap-2 items-center">
+                            <ArticleFormat format={format.name} />
+                            {filters.map((filter: any, idx: number) => (
+                              <Link key={idx} href={`/${params.slug}/tag/${filter.slug}`} className="text-primary hover:underline" >{filter.name}</Link>
+                            ))}
+                          </div>
+                          <Link href={slug}>
+                            <h4 className="text-xl font-medium font-primary-medium leading-snug text-balance hover:underline">{title}</h4>
+                            <p className="pt-2 flex gap-2 font-secondary-medium text-sm"><Date dateString={publish_date}/></p>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                }
+            </>
       
           </div>
         </div>

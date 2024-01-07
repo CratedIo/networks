@@ -428,7 +428,7 @@ export function AuthSignUpForm( { redirectParam }:any ) {
           </form>
         </Form>
         <div className="pt-4 text-center text-sm font-medium">
-          <p>Dont have an account?<AuthButton label={'Sign In'} url={'/signin'} pathParam={redirectParam} variant={'link'} /></p>
+          <p>Already have an account?<AuthButton label={'Sign In'} url={'/signin'} pathParam={redirectParam} variant={'link'} /></p>
         </div>
       </>
     :
