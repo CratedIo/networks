@@ -21,7 +21,8 @@ export default function FeaturedArticles({featured, params}:any) {
                 }}
                 className="w-full max-w-3xl md:flex flex-col items-end"
               >
-                <div className="flex gap-4 pr-12">
+                <div className="flex gap-4 px-8 pb-4 items-center">
+                  <p>Trending articles</p>
                   <CarouselPrevious />
                   <CarouselNext />
                 </div>

@@ -169,7 +169,7 @@
     .div13 img, .div14 img {
       height: 350px;
     }
-    .main-contant a {
+    .article-contant a {
       @apply underline
     }
     .main-contant li {

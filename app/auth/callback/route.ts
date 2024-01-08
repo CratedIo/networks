@@ -10,18 +10,22 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
   const next = searchParams.get('next')
-
+  const verify = searchParams.get('verify')
+  if(verify){
+    return NextResponse.redirect(verify)
+  }
   if (code) {
     const cookieStore = cookies()
     const supabase = createClientServer(cookieStore)
     await supabase.auth.exchangeCodeForSession(code)
+    console.log('got code')
   }
 
-  const domain = await DomainWhitelistValidation('thatcrated.io@gmail.com', '0a20c64e-b4e9-48bd-a713-b397239dac50')
+  //const domain = await DomainWhitelistValidation('thatcrated.io@gmail.com', '0a20c64e-b4e9-48bd-a713-b397239dac50')
 
 
   //Track when users signin
-  await setUserSignin((next != undefined || next != null)?origin + '/' + next:origin)
+  //await setUserSignin((next != undefined || next != null)?origin + '/' + next:origin)
 
   // URL to redirect to after sign in process completes
   if(next != undefined || next != null){

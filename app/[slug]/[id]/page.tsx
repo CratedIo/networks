@@ -113,32 +113,48 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
 
   const Content = ({ data }: any) => {
     if (!premium && !gated) {
-      return <PortableText value={data.content} components={RichText} />;
+      return (
+        <div className="article-content">
+          <PortableText value={data.content} components={RichText} />
+        </div>
+        );
     }
 
     if (gated) {
       if (session) {
-        return <PortableText value={data.content} components={RichText} />;
+        return (
+          <div className="article-content">
+            <PortableText value={data.content} components={RichText} />
+          </div>
+          );
       }
       return (
-          <AccessMessage />
+          <AccessMessage message={"gate"}/>
       );
     }
 
     if (premium) {
       if (session && userPremiumAccess?.premium_access) {
         return (
-            <PortableText value={data.content} components={RichText} />
+        <div className="article-content">
+          <PortableText value={data.content} components={RichText} />
+        </div>
         );
       } else if (session && !userPremiumAccess?.premium_access) {
-        return <p>You do not have the correct access</p>;
+        return (
+          <AccessMessage message={"premium"} />
+        );
       }
       return (
-        <AccessMessage />
+        <AccessMessage message={"gate"} />
       );
     }
 
-    return <PortableText value={data.content} components={RichText} />;
+    return (
+        <div className="article-content">
+          <PortableText value={data.content} components={RichText} />
+        </div>
+        );
   };
   
   const readingTime = (text:any) => {
@@ -148,8 +164,6 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
     const time = Math.ceil(words / wpm);
     return <p className="text-sm">{time} min read</p>
   }
-
-  console.log(params)
 
   return (
     <>

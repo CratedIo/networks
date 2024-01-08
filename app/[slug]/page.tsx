@@ -32,6 +32,7 @@ async function getNetwork(params: { slug: string }) {
     notFound;
   }
   return {network, articleData};
+  
 }
 
 export async function generateMetadata({
@@ -39,16 +40,15 @@ export async function generateMetadata({
 }: NetworkPageProps ): Promise<Metadata> {
   const data = await getNetwork(params);
 
+
+  console.log(data.network)
   if (!data) {
     return {};
   }
-  const { network } = data
-
-  const truncateDescription = toPlainText(network?.overview).slice(0, 100) + ("..." as string);
 
   return {
-    title: network?.title,
-    description: truncateDescription,
+    title: data.network?.title,
+    description: data.network?.overview.slice(0, 100) + ("..." as string)
   };
 }
 
@@ -57,6 +57,7 @@ export default async function NetworkPage({
   searchParams,
 }: NetworkPageProps ) {
   
+
   const route = '/' + params.slug
   
   const current_page = searchParams.page != undefined ? Number(searchParams.page) : 1;

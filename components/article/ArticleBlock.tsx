@@ -5,9 +5,20 @@ import Date from "../utils/date";
 import Image from "next/image";
 import { sanityImage } from "../utils/sanityImage";
 import FormatHoverCard from "./FormatHoverCard";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+  } from "@/components/ui/tooltip"
+import { getUserSession } from "@/utils/supabase/supabase.user";
 
-export default function ArticleBlock(data:{network:string, articles:any, start:number, image_skip:any, priority_image:boolean}) {
+export default async function ArticleBlock(data:{network:string, articles:any, start:number, image_skip:any, priority_image:boolean}) {
 
+    const {
+        data: { session },
+      } = await getUserSession();
+    
   return (
     <>
         {data.articles?.map(({title, publish_date, slug, cover_image, filters, format, premium, gated}:any, idx:number) => (
@@ -32,9 +43,30 @@ export default function ArticleBlock(data:{network:string, articles:any, start:n
                         {filters.map((filter: any, idx: number) => (
                             <FormatHoverCard key={idx} format={filter} />
                         ))}
-                        {(premium||gated) && (
+                        {(premium) && (
                             <>
-                                <p>·</p><p><Zap strokeWidth={1} /></p>
+                                <p>·</p>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger><Zap strokeWidth={1} /></TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Premium</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                            </>
+                        )}
+                        {((gated && !premium) && !session) && (
+                            <>
+                                <p>·</p>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger><Shield strokeWidth={1} /></TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Sign in to access</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </>
                         )}
                     </div>
