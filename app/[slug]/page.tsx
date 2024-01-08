@@ -4,7 +4,7 @@ import Link from "next/link";
 import { PaginationControls } from "@/components/pagination/PaginationControls";
 import Date from "@/components/utils/date";
 import Header from "@/components/Header";
-import { ChevronRight, Eye, ListMinus, Mail, Sparkles } from "lucide-react";
+import { ChevronRight, Eye, Flame, ListMinus, Mail, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ArticleFormat from "@/components/article/ArticleFormat";
 import ArticleImageIcon from "@/components/article/ArticleImageIcon";
@@ -87,54 +87,54 @@ export default async function NetworkPage({
     hero = false
   }
 
-  
   return (
     <>
       <Header title={ network.title } slug={ network.slug } color={network.cover_article.color} />
       <main>
         {hero &&
-          <div className="relative">
-            <div className="min-h-screen">
-              <Image
-                fill={true}
-                sizes="(max-width: 1920px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                alt={`Cover Image for ${network.cover_article.title}`}
-                src={sanityImage(network.cover_article.image) + '?w=1920'}
-                priority
-                className={'object-cover'}
-              />
-            </div>
-            <div className="absolute top-0 left-0 w-full h-full">
-              <div className="flex flex-col gap-12 justify-end items-end w-full h-full">
-                
-                <div className={`w-full px-12 flex justify-between items-end`}>
-                  <div className={`text-left ${network.cover_article.color}`}>
-                    <h1 className="text-7xl font-medium font-primary-medium leading-tight tracking-wide max-w-lg text-balance">{ network.title }</h1>
-                    <p className=" max-w-lg">{ network.overview }</p>
-                  </div>
-                  <div className="text-right max-w-2xl">
-                    <div className={`${network.cover_article.color}`}>
-                      <div className="flex gap-2 justify-end items-end pb-4">
-                        <Sparkles strokeWidth={1} />
-                        <p>Spotlight article</p>
-                      </div>
-                      <h2 className="text-3xl font-medium font-primary-medium leading-snug pb-4 text-balance">{network.cover_article.title}</h2>
-                      <p className="text-sm font-medium font-secondary-medium leading-snug pb-4 text-balance">{network.cover_article.description}</p>
-                    </div>
-                    <Button variant="outline" asChild>
-                      <Link href={network.cover_article.url} className="flex gap-2"> 
-                        <Eye strokeWidth={1} /> Read now
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-                <FeaturedArticles featured={featured_articles} params={params} />
+            <div className="relative isolate w-full min-h-screen flex items-end">
+              <div className="absolute w-full h-full -z-10 transform-gpu overflow-hidden " aria-hidden="true">
+                <Image
+                  fill={true}
+                  alt={`Cover Image for ${network.cover_article.title}`}
+                  src={sanityImage(network.cover_article.image) + '?w=1920'}
+                  priority
+                  className={'object-cover animate-blur scale-105'}
+                />
               </div>
-          </div>
+
+              <div className="w-full flex flex-col items-end">
+                <div className="w-full pt-32 pb-16 px-8 flex justify-between md:items-end flex-col md:flex-row gap-12">
+                    <div className={`text-left ${network.cover_article.color}`}>
+                      <h1 className="text-7xl font-medium font-primary-medium leading-tight tracking-wide max-w-lg text-balance">{ network.title }</h1>
+                      <p className=" max-w-lg">{ network.overview }</p>
+                    </div>
+                    <div className="text-right max-w-2xl">
+                      <div className={`${network.cover_article.color}`}>
+                        <div className="flex gap-2 justify-end items-end pb-4">
+                          <Sparkles strokeWidth={1} />
+                          <p>Spotlight article</p>
+                        </div>
+                        <h2 className="text-3xl font-medium font-primary-medium leading-snug pb-4 text-balance">{network.cover_article.title}</h2>
+                        <p className="text-sm font-medium font-secondary-medium leading-snug pb-4 text-balance">{network.cover_article.description}</p>
+                      </div>
+                      <Button variant="outline" asChild>
+                        <Link href={network.cover_article.url} className="flex gap-2"> 
+                          <Eye strokeWidth={1} /> Read now
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                  <FeaturedArticles featured={featured_articles} params={params} />
+              </div>
+
+
           </div>
         }
-        <div className="container mx-auto px-5 py-32">
-          
+        <div className="container mx-auto px-5 pt-16 pb-32">
+          <div className="pb-16 flex gap-2 items-center">
+            <Flame strokeWidth={1} /><p className="font-secondary-medium text-lg">Trending topics: <strong>Decarbonization</strong> | <strong>Climate Risk</strong> ...</p>
+          </div>
           <div className="article_grid gap-x-10 gap-y-4 pb-16">
             <ArticleBlock network={'climate'} articles={topArticles} start={1} image_skip={[2,3,4,5,7,8,9]} priority_image={true} />
             {advert &&

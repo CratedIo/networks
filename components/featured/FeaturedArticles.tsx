@@ -15,50 +15,52 @@ export default function FeaturedArticles({featured, params}:any) {
 
       if(featured.length > 3){
             return (
-            <Carousel
-            opts={{
+              <Carousel
+                opts={{
                   align: "start",
-            }}
-            className="w-full max-w-3xl flex flex-col items-end"
-            >
-            <div className="flex gap-4 pr-12">
+                }}
+                className="w-full max-w-3xl md:flex flex-col items-end"
+              >
+                <div className="flex gap-4 pr-12">
                   <CarouselPrevious />
                   <CarouselNext />
-            </div>
-            <CarouselContent className="bg-primary">
-                  {featured.map(({ title, publish_date, slug, format }: any, idx: number) => (
-                  <CarouselItem
-                        key={idx}
-                        className="md:basis-1/2 lg:basis-1/3 bg-primary"
-                  >
-                        <div className="bg-primary text-black p-6 pb-0 max-w-[300px] flex flex-col items-start justify-between">
-                        <div>
-                        <div className="pb-2 flex gap-2 items-center font-secondary-medium text-sm">
+                </div>
+                <CarouselContent className="bg-primary">
+                  {featured.map(
+                    (
+                      { title, publish_date, slug, format }: any,
+                      idx: number
+                    ) => (
+                      <CarouselItem key={idx} className="sm:basis-1/2 lg:basis-1/3 bg-primary" >
+                        <div className="bg-primary text-black p-6 pb-2 h-full flex flex-col items-start justify-between">
+                          <div>
+                            <div className="flex gap-2 items-center font-secondary-medium text-sm">
                               <ArticleFormat format={format.name} />
                               <p>
-                              <Date dateString={publish_date} />
+                                <Date dateString={publish_date} />
                               </p>
-                        </div>
-                        <Link href={`/${params.slug}/${slug}`}>
+                            </div>
+                            <Link href={`/${params.slug}/${slug}`}>
                               <p className="text-md font-medium font-primary-medium leading-snug text-balance">
-                              {title}
+                                {title}
                               </p>
-                        </Link>
-                        </div>
-                        <Button
-                        variant="link"
-                        asChild
-                        className="text-black px-0 flex gap-4"
-                        >
-                        <Link href={`/${params.slug}/${slug}`}>
+                            </Link>
+                          </div>
+                          <Button
+                            variant="link"
+                            asChild
+                            className="text-black px-0 flex gap-4"
+                          >
+                            <Link href={`/${params.slug}/${slug}`}>
                               Read now <ChevronRight className="h-4 w-4" />
-                        </Link>
-                        </Button>
+                            </Link>
+                          </Button>
                         </div>
-                  </CarouselItem>
-                  ))}
-            </CarouselContent>
-            </Carousel>
+                      </CarouselItem>
+                    )
+                  )}
+                </CarouselContent>
+              </Carousel>
             );
       }
 

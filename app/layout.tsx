@@ -12,7 +12,7 @@ const primaryFont = Prata({
  })
 const secondaryFont = Poppins({ 
   subsets: ['latin'],
-  weight: "300",
+  weight: ["300", "600"],
   variable: '--font-secondary'
  })
 

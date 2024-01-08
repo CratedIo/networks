@@ -32,14 +32,9 @@ export default function ArticleBlock(data:{network:string, articles:any, start:n
                         {filters.map((filter: any, idx: number) => (
                             <FormatHoverCard key={idx} format={filter} />
                         ))}
-                        {premium && (
+                        {(premium||gated) && (
                             <>
                                 <p>·</p><p><Zap strokeWidth={1} /></p>
-                            </>
-                        )}
-                        {gated && !premium && (
-                            <>
-                                <p>·</p><p><Shield strokeWidth={1} /></p>
                             </>
                         )}
                     </div>

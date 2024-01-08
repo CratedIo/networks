@@ -31,6 +31,8 @@ import { GetArticle, GetRelatedArticles } from "@/utils/supabase/supabase.querie
 import { sanityImage } from "@/components/utils/sanityImage";
 import ArticleFormat from "@/components/article/ArticleFormat";
 import FormatHoverCard from "@/components/article/FormatHoverCard";
+import AccessMessage from "@/components/article/AccessMessage";
+
 
 export const revalidate = 30; // revalidate at most 30 seconds
 
@@ -119,33 +121,20 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
         return <PortableText value={data.content} components={RichText} />;
       }
       return (
-        <div>
-          <h2 className="text-3xl font-medium leading-tight tracking-wide max-w-lg text-balance">
-            Sign up to discover human stories that deepen your understanding of the world.
-          </h2>
-          <AuthButton label={"Sign Up"} url={"/signup"} />
-          <div className="pt-4 text-sm font-medium">
-          <p>Already have an account?<AuthButton label={'Sign In'} url={'/signin'} pathParam={'/'} variant={'link'} /></p>
-        </div>
-        </div>
+          <AccessMessage />
       );
     }
 
     if (premium) {
       if (session && userPremiumAccess?.premium_access) {
         return (
-          <div>
             <PortableText value={data.content} components={RichText} />
-          </div>
         );
       } else if (session && !userPremiumAccess?.premium_access) {
         return <p>You do not have the correct access</p>;
       }
       return (
-        <div>
-          <p>This requires premium access</p>
-          <AuthButton label={"Sign In"} url={"/signin"} />
-        </div>
+        <AccessMessage />
       );
     }
 
@@ -222,6 +211,9 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
                 }
               />
             </AspectRatio>
+            <div className="div10 py-10 border flex justify-center border-dotted rounded-md my-2 advert">
+              <p>Advertisement Area</p>
+            </div>
       
           <div className="pb-32 pt-16 mx-auto max-w-3xl">
             
@@ -261,6 +253,9 @@ export default async function ArticlePage({ params }: ArticlePageProps ) {
                   </div>
                 ))}
               </div>
+            </div>
+            <div className="div10 py-24 border flex justify-center border-dotted rounded-md my-6 advert">
+              <p>Advertisement Area</p>
             </div>
       
               <div>
